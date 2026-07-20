@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-WebportalApplication<plus>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.u22.plus.webportal.WebportalApplication",
+            "projectName": "plus",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

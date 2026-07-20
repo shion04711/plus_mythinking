@@ -29,12 +29,12 @@
       </a>
     </header>
     <main>
-      <h1 class="page-title"><span>陣悠斗</span>さんのダッシュボード</h1>
+      <h1 class="page-title"><span th:text="${session.userData.userName}">XXXX</span>さんのダッシュボード</h1>
       <div class="card">
         <div class="card-content">
           <h3>一般機能</h3>
           <ul>
-            <li><a href="#" th:href="@{/login}"> なにもないよ </a></li>
+            <li><a href="#" th:href="@{/mondai}"> 問題追加（仮 </a></li>
 
           </ul>
           <div>

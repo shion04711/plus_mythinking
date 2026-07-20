@@ -29,4 +29,15 @@ public class LoginServive {
     session.setAttribute("userData", userData);
     return true;
   }
+  public void logout() {
+    session.invalidate();
+  }
+  
+  public boolean isLogin() {
+    UserData userData = (UserData) session.getAttribute("userData");
+    if (userData == null) {
+      return false;
+    }
+    return true;
+  }
 }
