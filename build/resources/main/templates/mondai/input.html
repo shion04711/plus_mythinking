@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebPortal.com</title>
+  <link rel="icon" th:href="@{/img/common/favicon.ico}" href="../../static/img/common/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" />
+</head>
+
+<body th:style="'background-image: url(' + @{/img/common/images.png} + ');'">
+  <header>
+    <a href="#" th:href="@{/}"><img class="header-logo" th:src="@{/img/common/jigazo.PNG}"
+        src="../../static/img/common/jigazo.PNG" /><strong>WebPortal.com</strong></a>
+    <a href="#" th:href="@{/logout}"><img th:src="@{/img/common/exit.svg}"
+        src="../../static/img/common/exit.svg" />ログアウト </a>
+  </header>
+
+  <main>
+    <h1 class="page-title">問題入力 画面</h1>
+
+    <!--
+      出席状況・勉強時間・間違えた問題(複数可)を
+      すべてまとめて1回で送信する、単一のform。
+    -->
+    <form method="post" th:action="@{/mondai}">
+
+      <div class="card">
+        <div class="card-content">
+          <label><input id="atten" type="radio" name="atten">出席</label>
+          <label><input id="deny" type="radio" name="atten">欠席</label>
+          <p></p>
+          <label for="maisu">プリント枚数</label>
+          <input id="maisu" type="text" name="maisu">
+
+          <label for="time">勉強時間</label>
+          <div class="time-picker" id="time" data-name="time" data-min-hour="0" data-max-hour="12"
+            data-minute-step="10"></div>
+        </div>
+      </div>
+
+      <!-- 間違えた問題カード(追加・削除できる) -->
+      <div id="mistakeList">
+        <div class="card mistake-card">
+          <div class="card-content">
+            <button type="button" class="mistake-card__close" aria-label="この問題を削除">&times;</button>
+
+            <label for="miss-0">誤答</label>
+            <input id="miss-0" type="text" name="entries[0].miss">
+
+            <label for="answer-0">正答</label>
+            <input id="answer-0" type="text" name="entries[0].answer">
+            <p>間違えた問題</p>
+            <label for="honbun-0"></label>
+            <textarea id="honbun-0" name="entries[0].honbun" cols="30" rows="5"
+              placeholder="間違えた問題を入力して下さい"></textarea>
+
+            <button type="button" class="mistake-card__add">＋ 追加</button>
+          </div>
+        </div>
+      </div>
+
+      <p><button type="submit">送信</button></p>
+    </form>
+  </main>
+
+  <footer>&copy; 2026 WebPortal.com</footer>
+
+  <script th:src="@{/js/custom-time-picker.js}" src="../../static/js/custom-time-picker.js"></script>
+  <script th:src="@{/js/mistake-cards.js}" src="../../static/js/mistake-cards.js"></script>
+</body>
+
+</html>
