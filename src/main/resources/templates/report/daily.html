@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebPortal.com</title>
+  <link rel="icon" th:href="@{/img/common/favicon.ico}" href="../static/img/common/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" />
+</head>
+
+<body>
+  <header>
+    <a href="#" th:href="@{/}"><img class="header-logo" th:src="@{/img/common/webportal.png}"
+        src="../static/img/common/webportal.png" /><strong>WebPortal.com</strong></a>
+  </header>
+  <main>
+    <div class="card text-center">
+      <div class="card-content">
+  <h1>総括レポート</h1>
+
+  <div class="report-container">
+    <div class="report-item">
+      <span class="label">総勉強時間</span>
+      <p class="value" th:text="${alltime}">XXX</p>
+    </div>
+
+    <div class="report-item">
+      <span class="label">総プリント枚数</span>
+      <p class="value" th:text="${allmaisu}">XXX</p>
+    </div>
+
+    <div class="report-item">
+      <span class="label">試験本番に向けて</span>
+      <p class="value" th:text="${sikentext}">XXXXXX</p>
+    </div>
+  </div>
+</div>
+</div>
+    <!-- .card -->
+  </main>
+  <footer>&copy; plus.com</footer>
+</body>
+
+</html>

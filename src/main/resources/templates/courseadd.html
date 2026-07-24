@@ -20,20 +20,21 @@
   <main>
     <div class="card text-center">
       <div class="card-content">
-        <h1>ログイン</h1>
+        <h1>コース作成画面</h1>
         <div>
           <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">ログインエラーメッセージ</p>
 
-          <form method="post" th:action="@{/login}">
-            <!-- <label for="course">コースID</label>
-            <input id="course" type="text" name="course"> -->
-            <label for="user_id">ユーザID(メールアドレス)</label>
-            <input id="user_id" type="text" name="user_id" placeholder="xxxxxxx@xxx.xxx" />
-            <label for="password">パスワード</label>
-            <input id="password" type="password" name="password" placeholder="xxxxxxxx" />
-            <!-- <label for="hyoji">  表示名</label>
-            <input id ="hyoji" type="text" name="hyoji" /> -->
-            <button type="submit">ログイン</button>
+          <form method="post" th:action="@{/courseadd}">
+            <label for="course_id">コースID</label>
+            <input id="course_id" type="text" name="course_id" />
+            <label for="course_name">コース名</label>
+            <input id="course_name" type="text" name="course_name" />
+            <p>期間</p>
+            <label for="start-date">開始日</label>
+            <input id="start-date" type="date" name="start"  placeholder="開始日"/>
+            <label for="end-date">終了日</label>
+            <input id="end-date" type="date" name="end" placeholder="終了日"/>
+            <button type="submit">作成</button>
           </form>
         </div>
       </div>
