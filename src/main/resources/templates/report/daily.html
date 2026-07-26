@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
   <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" />
+  <link rel="stylesheet" th:href="@{/css/report.css}" href="../../static/css/report.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -20,29 +22,87 @@
   <main>
     <div class="card text-center">
       <div class="card-content">
-  <h1>総括レポート</h1>
+  <h1>デイリーレポート</h1>
 
-  <div class="report-container">
-    <div class="report-item">
-      <span class="label">総勉強時間</span>
-      <p class="value" th:text="${alltime}">XXX</p>
-    </div>
+<div class="daily-report-wrapper">
+        <div class="report-container">
+          
+          <div class="report-item">
+            <div class="report-row">
+              <span class="label">勉強時間</span>
+              <span class="value" th:text="${dailytime}">XXX</span>
+            </div>
+            <div class="report-row">
+              <span class="label">プリント枚数</span>
+              <span class="value" th:text="${dailyprint}">XXX</span>
+            </div>
+          </div>
 
-    <div class="report-item">
-      <span class="label">総プリント枚数</span>
-      <p class="value" th:text="${allmaisu}">XXX</p>
-    </div>
+          <div class="report-item">
+            <div class="report-row">
+              <span class="label">累計勉強時間</span>
+              <span class="value" th:text="${alltime}">XXX</span>
+            </div>
+            <div class="report-row">
+              <span class="label">累計プリント枚数</span>
+              <span class="value" th:text="${allmaisu}">XXX</span>
+            </div>
+          </div>
 
-    <div class="report-item">
-      <span class="label">試験本番に向けて</span>
-      <p class="value" th:text="${sikentext}">XXXXXX</p>
-    </div>
-  </div>
-</div>
+          <div class="report-item">
+              <span class="label">間違えた原因</span>
+              <div class="chart-container">
+                <canvas id="reasonChart"></canvas>
+              </div>
+            </div>
+
+          <div class="report-item">
+            <span class="label">今までのデータとの比較</span>
+            <p class="value" th:text="${sikentext}">XXXXXX</p>
+          </div>
+
+          <div class="report-item">
+            <span class="label">次回気を付けること</span>
+            <p class="value" th:text="${sikentext}">XXXXXX</p>
+          </div>
+
+        </div>
+      </div>
 </div>
     <!-- .card -->
   </main>
   <footer>&copy; plus.com</footer>
+
+
+<script>
+    const ctx = document.getElementById('reasonChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie', // 円グラフを指定
+      data: {
+        labels: ['ケアレスミス', '理解不足', '時間不足', 'その他'], 
+        datasets: [{
+          data: [40, 30, 20, 10], 
+          backgroundColor: [
+            '#ff6384',
+            '#36a2eb',
+            '#ffce56',
+            '#cc65fe'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  </script>
+
 </body>
 
 </html>

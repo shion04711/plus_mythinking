@@ -1,0 +1,69 @@
+.report-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.report-item {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.report-item .label {
+  font-weight: bold;
+  color: #666;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.report-item .value {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.daily-report-wrapper .report-container {
+  max-width: 400px;
+  margin: 1.5rem auto 0;
+  text-align: left; 
+}
+
+
+.daily-report-wrapper .report-row {
+  display: flex !important;
+  justify-content: space-between; 
+  align-items: center;            
+  margin-bottom: 0.8rem;          
+}
+
+
+.daily-report-wrapper .label {
+  display: inline-block !important;
+  margin-bottom: 0 !important;
+  font-weight: bold;
+  color: #333;
+}
+
+
+.daily-report-wrapper .report-row .value {
+  display: inline-block !important;
+  font-size: 1rem;
+  margin: 0 !important;
+  background-color: #e0e0e0; 
+  color: #333;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  min-width: 110px;         
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* 長文用 */
+.daily-report-wrapper .report-item > .value {
+  background-color: #e0e0e0;
+  padding: 0.8rem;
+  border-radius: 4px;
+  min-height: 60px;
+  margin-top: 0.5rem;
+}
