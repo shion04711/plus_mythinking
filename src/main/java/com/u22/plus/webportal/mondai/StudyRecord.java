@@ -8,6 +8,9 @@ import java.util.List;
  */
 public record StudyRecord(
 
+  /** 学習記録ID（DB採番。新規登録時はnullでも可） */
+  Long recordId,
+
   String userId,
 
   AttendanceStatus attendance,

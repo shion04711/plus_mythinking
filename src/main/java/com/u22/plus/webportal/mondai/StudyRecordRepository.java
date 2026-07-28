@@ -1,6 +1,9 @@
 package com.u22.plus.webportal.mondai;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +59,70 @@ public class StudyRecordRepository {
     params.put("honbun", mistake.honbun());
 
     jdbc.update(SQL_INSERT, params);
+  }
+
+  /**
+   * 指定した生徒(userId)の学習記録を全件取得する（新しい順）。
+   * 各学習記録に紐づく間違えた問題も合わせて取得する。
+   *
+   * 講師側の詳細ページ（生徒1人の記録一覧）で使用する。
+   */
+  public List<StudyRecord> findByUserId(String userId) {
+
+    final String SQL_RECORDS = "SELECT record_id, user_id, attendance, print_count, study_minutes, created_at "
+        + "FROM study_record WHERE user_id = :userId ORDER BY created_at DESC";
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("userId", userId);
+
+    List<Map<String, Object>> recordRows = jdbc.queryForList(SQL_RECORDS, params);
+
+    List<StudyRecord> studyRecords = new ArrayList<>();
+
+    for (Map<String, Object> row : recordRows) {
+
+      Long recordId = ((Number) row.get("record_id")).longValue();
+
+      List<MistakeEntry> mistakes = findMistakesByRecordId(recordId);
+
+      StudyRecord studyRecord = new StudyRecord(
+          recordId,
+          (String) row.get("user_id"),
+          AttendanceStatus.valueOf((String) row.get("attendance")),
+          ((Number) row.get("print_count")).intValue(),
+          ((Number) row.get("study_minutes")).intValue(),
+          mistakes,
+          (LocalDateTime) row.get("created_at"));
+
+      studyRecords.add(studyRecord);
+    }
+
+    return studyRecords;
+  }
+
+  /**
+   * 指定した学習記録(recordId)に紐づく間違えた問題を全件取得する。
+   */
+  private List<MistakeEntry> findMistakesByRecordId(Long recordId) {
+
+    final String SQL_MISTAKES = "SELECT question_id, miss, answer, honbun "
+        + "FROM mistake_entry WHERE record_id = :recordId";
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("recordId", recordId);
+
+    List<Map<String, Object>> mistakeRows = jdbc.queryForList(SQL_MISTAKES, params);
+
+    List<MistakeEntry> mistakes = new ArrayList<>();
+
+    for (Map<String, Object> row : mistakeRows) {
+      mistakes.add(new MistakeEntry(
+          (String) row.get("question_id"),
+          (String) row.get("miss"),
+          (String) row.get("answer"),
+          (String) row.get("honbun")));
+    }
+
+    return mistakes;
   }
 }

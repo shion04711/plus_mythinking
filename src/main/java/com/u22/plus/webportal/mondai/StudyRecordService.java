@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.u22.plus.webportal.mondai.StudyRecordForm;
-
 /**
  * 学習記録登録（出席・勉強時間・プリント枚数・間違えた問題）の業務ロジックを担当するService。
  *
@@ -36,6 +34,7 @@ public class StudyRecordService {
     List<MistakeEntry> mistakes = toMistakeEntries(form.getEntries());
 
     StudyRecord studyRecord = new StudyRecord(
+        null,
         userId,
         attendance,
         printCount,
