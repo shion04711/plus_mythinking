@@ -46,7 +46,7 @@ public class StudentController {
     UserData loginUser = (UserData) session.getAttribute("userData");
 
     if (!isTeacherRole(loginUser.role())) {
-      model.addAttribute("errorMessage", "この画面を閲覧する権限がありません。");
+      model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");
       return "login";
     }
 
@@ -67,7 +67,7 @@ public class StudentController {
     UserData loginUser = (UserData) session.getAttribute("userData");
 
     if (!isTeacherRole(loginUser.role())) {
-      model.addAttribute("errorMessage", "この画面を閲覧する権限がありません。");
+      model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");
       return "login";
     }
 
