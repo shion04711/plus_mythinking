@@ -12,6 +12,9 @@ public record MistakeEntry(
 
   String answer,
 
-  String honbun
+  String honbun,
+
+  /** 間違えた原因（ケアレスミス・理解不足・時間不足・その他） */
+  MistakeReason reason
 ) {
 }

@@ -4,7 +4,7 @@ package com.u22.plus.webportal.mondai;
  * 間違えた問題1件分のフォーム入力。
  * HTML側の name="entries[n].xxx" にバインドされる。
  *
- * questionIdは現状のフォームに入力欄が無いため任意項目。
+ * questionId・reasonは現状のフォームに入力欄が無いため任意項目。
  * 将来フォームに入力欄が追加された際、そのまま利用できる。
  */
 public class MistakeEntryForm {
@@ -16,6 +16,9 @@ public class MistakeEntryForm {
   private String answer;
 
   private String honbun;
+
+  /** 間違えた原因（文字列。値は MistakeReason の名前と一致させる。例: "CARELESS"） */
+  private String reason;
 
   public String getQuestionId() {
     return questionId;
@@ -47,5 +50,13 @@ public class MistakeEntryForm {
 
   public void setHonbun(String honbun) {
     this.honbun = honbun;
+  }
+
+  public String getReason() {
+    return reason;
+  }
+
+  public void setReason(String reason) {
+    this.reason = reason;
   }
 }

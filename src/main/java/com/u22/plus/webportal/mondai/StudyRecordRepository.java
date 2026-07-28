@@ -48,8 +48,8 @@ public class StudyRecordRepository {
    */
   public void saveMistake(Long recordId, MistakeEntry mistake) {
 
-    final String SQL_INSERT = "INSERT INTO mistake_entry (record_id, question_id, miss, answer, honbun) "
-        + "VALUES (:recordId, :questionId, :miss, :answer, :honbun)";
+    final String SQL_INSERT = "INSERT INTO mistake_entry (record_id, question_id, miss, answer, honbun, reason) "
+        + "VALUES (:recordId, :questionId, :miss, :answer, :honbun, :reason)";
 
     Map<String, Object> params = new HashMap<>();
     params.put("recordId", recordId);
@@ -57,6 +57,7 @@ public class StudyRecordRepository {
     params.put("miss", mistake.miss());
     params.put("answer", mistake.answer());
     params.put("honbun", mistake.honbun());
+    params.put("reason", mistake.reason() != null ? mistake.reason().name() : null);
 
     jdbc.update(SQL_INSERT, params);
   }
@@ -105,7 +106,7 @@ public class StudyRecordRepository {
    */
   private List<MistakeEntry> findMistakesByRecordId(Long recordId) {
 
-    final String SQL_MISTAKES = "SELECT question_id, miss, answer, honbun "
+    final String SQL_MISTAKES = "SELECT question_id, miss, answer, honbun, reason "
         + "FROM mistake_entry WHERE record_id = :recordId";
 
     Map<String, Object> params = new HashMap<>();
@@ -116,11 +117,16 @@ public class StudyRecordRepository {
     List<MistakeEntry> mistakes = new ArrayList<>();
 
     for (Map<String, Object> row : mistakeRows) {
+
+      String reasonStr = (String) row.get("reason");
+      MistakeReason reason = reasonStr != null ? MistakeReason.valueOf(reasonStr) : null;
+
       mistakes.add(new MistakeEntry(
           (String) row.get("question_id"),
           (String) row.get("miss"),
           (String) row.get("answer"),
-          (String) row.get("honbun")));
+          (String) row.get("honbun"),
+          reason));
     }
 
     return mistakes;

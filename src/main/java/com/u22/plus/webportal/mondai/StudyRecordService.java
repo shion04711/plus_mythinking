@@ -132,10 +132,30 @@ public class StudyRecordService {
       }
     }
 
+    MistakeReason reason = parseReason(entryForm.getReason());
+
     return new MistakeEntry(
         questionId != null && !questionId.isBlank() ? questionId.trim() : null,
         entryForm.getMiss(),
         entryForm.getAnswer(),
-        honbun);
+        honbun,
+        reason);
+  }
+
+  /**
+   * 間違えた原因を文字列からenumへ変換する。
+   * 現状フォームに入力欄が無いため未入力の場合は OTHER 扱いとする。
+   */
+  private MistakeReason parseReason(String reason) {
+
+    if (reason == null || reason.isBlank()) {
+      return MistakeReason.OTHER;
+    }
+
+    try {
+      return MistakeReason.valueOf(reason.trim().toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new StudyRecordRegistException("間違えた原因の値が不正です。");
+    }
   }
 }
