@@ -1,0 +1,65 @@
+      .dashboard-grid {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .student-info-box {
+        flex: 1;
+        background-color: var(--light-gray-color, #e0e0e0);
+        min-height: 200px;
+        padding: 20px;
+        border-radius: 8px;
+      }
+      .student-info-box p {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--dark-gray-color, #333);
+      }
+      /* 円グラフエリアの調整 */
+      .chart-container-box {
+        width: 200px;
+        height: 200px;
+        position: relative;
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .student-list-container {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+      }
+      .status-dots {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        padding-top: 52px;
+      }
+      .dot {
+        width: 16px;
+        height: 16px;
+        background-color: var(--light-gray-color, #ccc);
+        border-radius: 50%;
+      }
+      .student-table-wrapper {
+        flex: 1;
+      }
+      .dashboard-table {
+        margin: 0;
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .dashboard-table th {
+        background-color: transparent;
+        color: var(--dark-gray-color, #333);
+        border: 1px solid var(--dark-gray-color, #333);
+        font-size: 1.1rem;
+        padding: 10px;
+      }
+      .dashboard-table td {
+        border: 1px solid var(--dark-gray-color, #333);
+        height: 48px;
+        padding: 5px 10px;
+      }
