@@ -22,7 +22,7 @@ public class LoginController {
     public String login(Model model, @RequestParam(name = "user_id") String userId,
             @RequestParam(name = "password") String password) {
         if (!loginServive.login(userId, password)) {
-            model.addAttribute("errorMessage", "ユーザIDまたはパスワードが違います。");
+            model.addAttribute("errormessage", "ユーザIDまたはパスワードが違います。");
             return "login";
         }
         return "redirect:/";
