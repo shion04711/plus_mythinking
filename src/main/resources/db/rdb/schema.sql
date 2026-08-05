@@ -13,7 +13,7 @@ ON DELETE SET NULL　外部キーを含むデータが消すとき、そこの�
 */
 
 -- 1. コース情報 テーブル
-CREATE TABLE courses (
+CREATE TABLE IF NOT EXISTS courses (
     course_id SERIAL PRIMARY KEY,              -- コースID　自動連番が望ましいです
     course_name VARCHAR(100) NOT NULL,		-- コース名
     start_date DATE NOT NULL,		-- 開始日
@@ -21,20 +21,20 @@ CREATE TABLE courses (
 );
 
 -- 2. ミス原因マスタ
-CREATE TABLE error_reasons (
+CREATE TABLE IF NOT EXISTS error_reasons (
     reason_id SERIAL PRIMARY KEY,	-- ミス原因ID
     reason_name VARCHAR(100) NOT NULL	-- ミス原因の内容
 );
 
 -- 3. 生徒情報 テーブル
-CREATE TABLE students (
+CREATE TABLE IF NOT EXISTS students (
     student_id VARCHAR(20) PRIMARY KEY,        -- 学籍番号など
     course_id INT REFERENCES courses(course_id),-- 外部キー　コースID
     student_name VARCHAR(50) NOT NULL		-- 生徒名
 );
 
 -- 4. 入力ログDB
-CREATE TABLE input_logs (
+CREATE TABLE IF NOT EXISTS input_logs (
     log_id SERIAL PRIMARY KEY,		-- ログID　こちらも自動連番が望ましいです
     student_id VARCHAR(20) REFERENCES students(student_id) ON DELETE SET NULL,-- 生徒ID
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 送信日時
@@ -44,3 +44,4 @@ CREATE TABLE input_logs (
     incorrect_answer TEXT,-- 誤答
     question_text TEXT -- 問題文　後でNoSQLに逃がす？
 );
+
