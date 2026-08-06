@@ -23,13 +23,13 @@ public class LoginController {
             @RequestParam(name = "password") String password) {
         if (!loginServive.login(userId, password)) {
             model.addAttribute("errormessage", "ユーザIDまたはパスワードが違います。");
-            return "login";
+            return "student/login";
         }
         return "redirect:/";
     }
     @GetMapping("/logout")
     public String logout() {
         loginServive.logout();
-        return "login";
+        return "student/login";
     }
 }

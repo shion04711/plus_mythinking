@@ -21,6 +21,7 @@
   </header>
 
   <main>
+    <p class="error-message" th:if="${errorMessage}" th:text="${errorMessage}">ログインエラーメッセージ</p>
     <h1 class="page-title">問題入力 画面</h1>
 
     <!--
@@ -31,8 +32,8 @@
 
       <div class="card">
         <div class="card-content">
-          <label><input id="atten" type="radio" name="atten">出席</label>
-          <label><input id="deny" type="radio" name="atten">欠席</label>
+          <label><input id="atten" type="radio" name="atten" value="ATTEN">出席</label>
+          <label><input id="deny" type="radio" name="atten" value="DENY">欠席</label>
           <p></p>
           <label for="maisu">プリント枚数</label>
           <input id="maisu" type="text" name="maisu">
@@ -54,6 +55,16 @@
 
             <label for="answer-0">正答</label>
             <input id="answer-0" type="text" name="entries[0].answer">
+
+            <label for="reason-0">間違えた原因</label>
+            <select id="reason-0" name="entries[0].reason">
+              <option value="" disabled selected>選択してください</option>
+              <option value="CARELESS">ケアレスミス</option>
+              <option value="UNDERSTANDING">理解不足</option>
+              <option value="TIME_SHORTAGE">時間不足</option>
+              <option value="OTHER">その他</option>
+            </select>
+
             <p>間違えた問題</p>
             <label for="honbun-0"></label>
             <textarea id="honbun-0" name="entries[0].honbun" cols="30" rows="5"

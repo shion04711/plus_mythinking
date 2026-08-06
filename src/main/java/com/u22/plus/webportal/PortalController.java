@@ -15,8 +15,8 @@ public class PortalController {
   @GetMapping("/")
   public String index() {
     if (!loginServive.isLogin()) {
-      return "login";
+      return "student/login";
     }
-    return "index";
+    return "student/index";
     }
 }
