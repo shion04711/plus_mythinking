@@ -12,6 +12,18 @@ INSERT INTO student_m (student_id, course_id, student_name) VALUES
 ('20253456', 1, 'テスト 花子'),
 ('20209999', 2, 'テスト 五郎');
 
+
+INSERT INTO error_reason_m (reason_id, reason_name) VALUES 
+(1, '[DEMO] 理解不足（分かってなかった）'),
+(2, '[DEMO] 知識不足（知らなかった）'),
+(3, '[DEMO] 時間切れ'),
+(4, '[DEMO] 思い込み'),
+(5, '[DEMO] 読み間違い'),
+(6, '[DEMO] 書き間違い'),
+(7, '[DEMO] 計算ミス'),
+(8, '[DEMO] ケアレスミス（その他）')
+ON CONFLICT (reason_id) DO NOTHING; -- すでにあればスキップ
+
 -- 3. 入力ログ
 INSERT INTO input_logs (student_id, course_id, reason_id, study_minutes, correct_answer, incorrect_answer, question_text, created_at) VALUES 
 -- 直近のログ
@@ -25,13 +37,3 @@ INSERT INTO input_logs (student_id, course_id, reason_id, study_minutes, correct
 -- ============================================================
 
 -- ミス原因マスタ 内容は仮（追々修正）
-INSERT INTO error_reason_m (reason_id, reason_name) VALUES 
-(1, '[DEMO] 理解不足（分かってなかった）'),
-(2, '[DEMO] 知識不足（知らなかった）'),
-(3, '[DEMO] 時間切れ'),
-(4, '[DEMO] 思い込み'),
-(5, '[DEMO] 読み間違い'),
-(6, '[DEMO] 書き間違い'),
-(7, '[DEMO] 計算ミス'),
-(8, '[DEMO] ケアレスミス（その他）')
-ON CONFLICT (reason_id) DO NOTHING; -- すでにあればスキップ
