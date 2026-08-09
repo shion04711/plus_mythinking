@@ -1,67 +1,19 @@
 @charset "UTF-8";
 /* 文字エンコーディングをUTF-8に設定して、多言語対応を可能にする */
 
-/*
- WebPortalのCSS設定.
- */
-
-/** 共通のカラースキーム */
-@keyframes bniko {
-  0% {
-    background-color: #e74c3c;
-  }
-  20% {
-    background-color: #f1c40f;
-  }
-  40% {
-    background-color: #1abc9c;
-  }
-  60% {
-    background-color: #3498db;
-  }
-  80% {
-    background-color: #9b59b6;
-  }
-  100% {
-    background-color: #e74c3c;
-  }
-}
-
-@keyframes niko {
-  0% {
-    color: #e74c3c;
-  }
-  20% {
-    color: #f1c40f;
-  }
-  40% {
-    color: #1abc9c;
-  }
-  60% {
-    color: #3498db;
-  }
-  80% {
-    color: #9b59b6;
-  }
-  100% {
-    color: #e74c3c;
-  }
-}
 :root {
   /* ここで定義されたカラー変数は、このCSS内で何度も再利用できる */
-  --primary-color: #4a90e2;
-  --light-primary-color: #e1f5fe;
+  /* 青系 */
+  --primary-color:#0077b6;
+  --pale-gray-color: #90e0ef;
+  --dark-blue-color:#03045e;
+  --hover-color:#00b4d8;
+  --white-color: #ffffff;
   --secondary-color: #f5f5f5;
+  --gray-color: #999999;
   --danger-color: #f44336;
   --warning-color: #ff9800;
   --success-color: #228b22;
-  --white-color: #ffffff;
-  --pale-gray-color: #efefef;
-  --light-gray-color: #dddddd;
-  --gray-color: #999999;
-  --dark-gray-color: #333333;
-  --gray-color-rgb: 176, 176, 176;
-  --black-color-rgb: 0, 0, 0;
 }
 
 /** ユーティリティ設定 */
@@ -92,7 +44,6 @@
 .bg-success {
   background-color: var(--success-color); /* 背景色を「成功」を示す色に設定 */
 }
-
 /** ベース設定 */
 * {
   box-sizing: border-box; /* 全要素のボックスサイズ計算方法をborder-boxに設定 */
@@ -104,37 +55,43 @@ body {
 }
 
 body {
-  background-image: url(/src/main/resources/static/img/common/images.png);
-  background-size: cover;
-  /* background-color: var(--secondary-color);*/ /* bodyの背景色を設定 */
+    /*background:var(--pale-gray-color);*/
+    background:
+    linear-gradient(
+    180deg,
+    #f7fcfe 0%,
+    #eef8fb 100%
+    );
   color: var(--primary-color); /* body内のテキストの基本色を設定 */
   font-family: "Roboto", sans-serif; /* フォントファミリーをRobotoに設定 */
 }
 
 input[type="text"],
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+textarea{
   font-size: 16px; /* フォントサイズを16pxに設定 */
   padding: 10px 15px; /* 内側の余白を設定 */
-  border: 1px solid var(--light-gray-color); /* 薄い灰色の境界線を設定 */
+  border: 1px solid var(--pale-gray-color); /* 薄い灰色の境界線を設定 */
   border-radius: 5px; /* 角を丸くするための設定 */
-  margin-bottom: 10px; /* 要素の下に10pxのマージンを設定 */
+  margin-bottom: 20px; /* 要素の下に10pxのマージンを設定 */
   width: 100%; /* 親要素の幅に合わせて拡張 */
   box-sizing: border-box; /* パディングと境界線を幅と高さに含める */
 }
-
 input[type="text"]:focus,
 input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+textarea:focus{
   /* ユーザーが入力フィールドを選択したときに適用される */
   outline: none; /* デフォルトのアウトラインを削除 */
   border-color: var(--primary-color); /* フォーカス時に境界線の色を変更 */
-  box-shadow: 0 0 8px rgba(var(--gray-color-rgb), 0.5); /* フォーカス時に影を追加 */
+  box-shadow: none;
 }
 
 input[type="text"]::placeholder,
 input[type="email"]::placeholder,
-input[type="password"]::placeholder {
+input[type="password"]::placeholder,
+textarea::placeholder{
   /* プレースホルダー（入力フィールドに表示される薄いテキスト）のスタイル */
   color: var(--gray-color); /* プレースホルダーのテキスト色を設定 */
 }
@@ -144,7 +101,7 @@ input[type="date"] {
   width: 100%; /* 親要素の幅に合わせて拡張 */
   padding: 10px 15px; /* 内側の余白を設定 */
   font-size: 16px; /* フォントサイズを16pxに設定 */
-  border: 1px solid var(--light-gray-color); /* 薄い灰色の境界線を設定 */
+  border: 1px solid var(--pale-gray-color); /* 薄い灰色の境界線を設定 */
   border-radius: 5px; /* 角を丸くするための設定 */
   background-color: var(--white-color); /* 背景色を白に設定 */
   cursor: pointer; /* マウスカーソルをポインター形状に変更 */
@@ -158,26 +115,33 @@ input[type="date"]:focus {
   outline: none; /* デフォルトのアウトラインを削除 */
 }
 
-button {
-  background-color: var(--primary-color); /* メインカラーで背景を設定 */
-  color: var(--white-color); /* テキストの色を白に設定 */
-  padding: 10px 15px; /* ボタンの内側の余白 */
-  border: none; /* 枠線を削除 */
-  border-radius: 5px; /* 角を丸くする */
-  cursor: pointer; /* マウスカーソルをポインターに */
-  font-size: 16px; /* フォントサイズ */
-  opacity: 1; /* 透明度 */
-  transition: opacity 0.3s; /* ホバー時のアニメーション効果 */
+input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+button:not(.mistake-card__close) {
+  background-color: var(--primary-color);/* メインカラーで背景を設定 */
+  color: var(--white-color);/* テキストの色 */
+  padding: 12px 28px;/* ボタンの内側の余白 */
+  min-width: 140px;
+  border: none;
+  border-radius: 8px;/* 角を丸くする */
+  font-size: 16px;
+  cursor: pointer;/* マウスカーソルをポインターに */
+  margin-top: 30px;/*ボタンの上の余白*/
 }
 
 button:hover {
   /* ボタンにマウスオーバーした時のスタイル */
   opacity: 0.8; /* 透明度を80%に */
+  background: var(--hover-color);
 }
 
 button:active {
   /* ボタンをクリックした時のスタイル */
-  opacity: 0.6; /* 透明度を60%に */
+  background: var(--dark-blue-color);
+  opacity: 1; /* 透明度 */
 }
 
 table {
@@ -191,23 +155,18 @@ table th {
   color: var(--white-color); /* ヘッダーのテキスト色を白に */
   text-align: center; /* テキストを中央揃えに */
   padding: 5px; /* 内側の余白 */
-  border-bottom: 1px solid var(--light-gray-color); /* 下の境界線 */
+  border-bottom: 1px solid var(--pale-gray-color); /* 下の境界線 */
 }
 
 table td {
   padding: 5px; /* セルの内側の余白 */
-  border-bottom: 1px solid var(--light-gray-color); /* 下の境界線 */
+  border-bottom: 1px solid var(--pale-gray-color); /* 下の境界線 */
   text-decoration: none; /* テキストの装飾をなしに */
-}
-
-table tr:nth-child(even) {
-  /* 偶数行のテーブル行のスタイリング */
-  background-color: var(--pale-gray-color); /* 背景色を薄い灰色に */
 }
 
 table tr:hover {
   /* テーブル行にマウスオーバーした時のスタイル */
-  background-color: var(--light-primary-color); /* ホバー時の背景色を薄い青に */
+  background-color: var(--pale-gray-color); /* ホバー時の背景色 */
 }
 
 ul {
@@ -218,29 +177,37 @@ ul {
 
 ul li {
   padding: 10px; /* 内側の余白 */
-  border-bottom: 1px solid var(--light-gray-color); /* 下線 */
+  border-bottom: 1px solid var(--gray-color); /* 下線 */
+  /*background-color: var(--white-color);
+  border-radius:8px;
+  margin:10px 0;*/
 }
 
 ul li a {
   text-decoration: none; /* 下線を非表示に */
 }
 
-ul li:hover {
-  /* リストアイテムにマウスオーバーした時のスタイル */
-  background-color: var(--pale-gray-color); /* ホバー時の背景色を薄い灰色に */
+/* 通常のリンク */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+/* ホバー時 */
+a:hover {
+  color: var(--hover-color);
 }
 
 /* ヘッダー */
 header {
-  animation: bniko 2s infinite;
-  /*background-color: var(--primary-color);*/ /* 背景色をメインカラーに */
+  /*animation: bniko 2s infinite;*/
+  background-color: var(--primary-color); /* 背景色をメインカラーに */
   box-shadow: 0 2px 4px rgba(var(--black-color-rgb), 0.1); /* 影を追加して立体感を出す */
   padding: 10px 20px; /* 上下10px、左右20pxの内側の余白 */
   display: flex; /* フレックスボックスを使用 */
   justify-content: space-between; /* アイテムを両端に配置 */
   align-items: center; /* アイテムを縦方向中央に配置 */
 }
-
 .header-logo {
   width: 50px; /* ロゴの幅を50pxに */
   height: auto; /* 高さを自動調整 */
@@ -249,7 +216,7 @@ header {
 
 header a {
   text-decoration: none; /* 下線を非表示に */
-  color: var(--dark-gray-color); /* テキストの色 */
+  color: var(--white-color); /* テキストの色 */
   font-size: 16px; /* フォントサイズ */
   display: flex; /* フレックスボックスを使用 */
   align-items: center; /* アイテムを縦方向中央に配置 */
@@ -272,18 +239,55 @@ main {
 }
 
 .page-title {
-  margin-left: 15px; /* 左側のマージン */
-  font-weight: bold; /* 太字 */
+  /*margin-left: 15px; /* 左側のマージン */
+    text-align:center;/*中央*/
+    color: var(--dark-blue-color);
+    margin-top:30px;/*要素上側の余白*/
+}
+
+/*タイトルの下線*/
+/*.page-title::after{
+    content:"";
+    display:block;
+    width:500px;
+    height:4px;
+    background:var(--hover-color);
+    margin:15px auto 0;
+    border-radius:999px;
+}*/
+
+h1{
+  color: var(--dark-blue-color);
+}
+label{
+  color: var(--primary-color);
+  display: block;
+  margin-top: 25px;/*ラベル上の余白*/
+  margin-bottom: 12px;/*ラベル下の余白*/
+  font-size: 18px;
+}
+
+label:has(input[type="radio"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;          
+  margin-right: 80px; 
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .card {
-  background-color: var(--white-color); /* 背景色を白に */
-  opacity: 0.9;
-  box-shadow: 0 4px 8px 0 rgba(var(--black-color-rgb), 0.2); /* 影を追加 */
-  transition: 0.3s; /* ホバー時のアニメーション効果 */
-  padding: 16px; /* 内側の余白 */
-  margin: 16px; /* 外側の余白 */
-  border-radius: 10px; /* 角を丸くする */
+  /*opacity: 0.9;
+  /*transition: 0.3s; /* ホバー時のアニメーション効果 */
+  /*padding: 16px; 
+  /*margin: 16px; 
+  /*border-radius: 10px; /* 角を丸くする */ 
+    background-color: var(--white-color); /* 背景色*/
+    max-width:800px;
+    box-shadow: 0 4px 8px 0 rgba(var(--black-color-rgb), 0.2);/* 影を追加 */
+    margin:30px auto;
+    border-radius:15px;/* 外側の余白 */
+    padding:30px;/* 内側の余白 */
 }
 
 .card-content {
@@ -294,7 +298,6 @@ main {
   /* カードにマウスオーバーした時のスタイル */
   box-shadow: 0 8px 16px 0 rgba(var(--black-color-rgb), 0.2); /* 影を強調 */
 }
-
 /* フッター */
 footer {
   text-align: center; /* テキストを中央揃えに */
@@ -325,22 +328,22 @@ footer {
   margin: 10px; /* 外側に10pxの余白を設ける */
 }
 
-.time-picker {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.time-picker{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.time-picker__select {
-  font-size: 15px;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
+.time-picker__select{
+    width: 80px;
+    height: 48px;
+    font-size: 20px;
+    border-radius: 10px;
+    padding: 0 12px;
 }
-
-.time-picker__separator {
-  font-weight: 600;
+.time-picker__separator{
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .mistake-card {
@@ -353,22 +356,27 @@ footer {
 
 .mistake-card__close {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 26px;
-  height: 26px;
+  top: 16px;
+  right: 16px;
+  /*cardの右上から16px離す*/
+  width: 42px;
+  height: 42px;
+  min-width:0;
+  padding:0;/*buttonのpaddingを打ち消す！*/
+  /*ボタン自体の大きさ（スマホは40~48が押しやすいとされてる）*/
+
   border: none;
   border-radius: 50%;
-  background: #eee;
-  color: #555;
-  font-size: 16px;
-  line-height: 1;
-  cursor: pointer;
-}
 
-.mistake-card__close:hover {
-  background: #e0a0a0;
-  color: #fff;
+  background: var(--danger-color);
+  color: var(--white-color);
+
+  font-size: 24px;
+  /*マークの大きさ*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*マークをボタンの真ん中に*/
 }
 
 .mistake-card__add {
@@ -376,3 +384,37 @@ footer {
   margin: 12px 0;
 }
 
+.mistake-card p{
+    color: var(--primary-color);
+    font-size: 18px;
+    margin-top: 25px;
+    margin-bottom: 12px;
+}
+/* style.css の末尾などに追記 */
+.report-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.report-item {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.report-item .label {
+  font-weight: bold;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  display: block;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.report-item .value {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: var(--dark-blue-color);
+  margin: 0;
+}
