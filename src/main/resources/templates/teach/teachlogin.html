@@ -24,7 +24,7 @@
         <div>
           <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">ログインエラーメッセージ</p>
 
-          <form method="post" th:action="@{/login}">
+          <form method="post" th:action="@{/teachlogin}">
             <!-- <label for="course">コースID</label>
             <input id="course" type="text" name="course"> -->
             <label for="user_id">ユーザID(メールアドレス)</label>
@@ -35,6 +35,9 @@
             <input id ="hyoji" type="text" name="hyoji" /> -->
             <button type="submit">ログイン</button>
           </form>
+          <div style="margin-top: 15px;">
+            <a th:href="@{/teachadd}" class="btn">新規登録はこちら</a>
+          </div>
         </div>
       </div>
     </div>
