@@ -20,13 +20,13 @@
   <main>
     <div class="card text-center">
       <div class="card-content">
-        <h1>ログイン</h1>
+        <h1>講師新規登録</h1>
         <div>
           <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">ログインエラーメッセージ</p>
 
           <form method="post" th:action="@{/teachadd}">
             <label for="user_id">ユーザID(メールアドレス)</label>
-            <input id="user_id" type="text" name="user_id" placeholder="xxxxxxx@xxx.xxx" />
+            <input id="user_id" type="email" name="user_id" placeholder="xxxxxxx@xxx.xxx" />
             <label for="password">パスワード</label>
             <input id="password" type="password" name="password" placeholder="xxxxxxxx" />
             <label for="password2">パスワード（確認:同じのを入力）</label>

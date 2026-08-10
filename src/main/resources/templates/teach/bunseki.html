@@ -15,11 +15,38 @@
     
     <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" />
     <link rel="stylesheet" th:href="@{/css/report.css}" href="../../static/css/report.css" />
-    <link rel="stylesheet" th:href="@{/css/report.css}" href="../../static/css/bunseki.css" />
+    <link rel="stylesheet" th:href="@{/css/bunseki.css}" href="../../static/css/bunseki.css" />
 
+    <!-- Chart.js ライブラリ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- 外部JSファイルの読み込み -->
+    <script th:src="@{/js/tableSort.js}" src="../../static/js/tableSort.js"></script>
+    <script th:src="@{/js/dashboard.js}" src="../../static/js/dashboard.js"></script>
 
+    <style>
+      .sortable {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+      }
+      .sortable:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      .sort-icon {
+        font-size: 0.8em;
+        margin-left: 4px;
+        color: #888;
+      }
+      .student-detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+      }
+      .student-detail-list li {
+        margin-bottom: 4px;
+      }
+    </style>
   </head>
   <body th:style="'background-image: url(' + @{/img/common/images.png} + ');'">
     <div>
@@ -43,9 +70,15 @@
           <div class="card-content">
             
             <div class="dashboard-grid">
+              <!-- 選択中の生徒の情報表示領域 -->
               <div class="student-info-box">
                 <p class="fw-bold">選択中の生徒の情報</p>
-                <p th:text="${selectedStudentName}">生徒名</p>
+                <ul class="student-detail-list">
+                  <li><strong>名前:</strong> <span id="displayStudentName" th:text="${selectedStudentName}">未選択</span></li>
+                  <li><strong>クラス番号:</strong> <span id="displayClassNum" th:text="${selectedClassNum}">-</span></li>
+                  <li><strong>正答率:</strong> <span id="displayAccuracyRate" th:text="${selectedAccuracyRate}">-</span></li>
+                  <li><strong>備考:</strong> <span id="displayStudentInfo" th:text="${selectedStudentInfo}">生徒を選択してください</span></li>
+                </ul>
               </div>
 
               <div class="chart-container-box">
@@ -54,40 +87,55 @@
             </div>
 
             <div class="student-list-container">
-              <div class="status-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-
               <div class="student-table-wrapper">
-                <table class="dashboard-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 28%;">生徒名</th>
-                      <th style="width: 72%;">各生徒の情報（「ミスの原因の割合」と「入力状況」）</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
+                <form th:action="@{/dashboard}" method="get" id="studentForm">
+                  <table class="dashboard-table" id="studentTable">
+                    <thead>
+                      <tr>
+                        <th style="width: 10%; text-align: center;">選択</th>
+                        <th style="width: 20%;" class="sortable" data-sort="text" onclick="sortTable(1)">
+                          生徒名<span class="sort-icon">⇅</span>
+                        </th>
+                        <th style="width: 15%;" class="sortable" data-sort="text" onclick="sortTable(2)">
+                          クラス番号<span class="sort-icon">⇅</span>
+                        </th>
+                        <th style="width: 15%;" class="sortable" data-sort="rate" onclick="sortTable(3)">
+                          正答率<span class="sort-icon">⇅</span>
+                        </th>
+                        <th style="width: 40%;">各生徒の情報</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="student : ${students}">
+                        <td style="text-align: center;">
+                          <!-- ラジオボタンに data-* 属性でデータ保持 -->
+                          <input
+                            type="radio"
+                            name="studentId"
+                            th:value="${student.id}"
+                            th:data-name="${student.name}"
+                            th:data-class="${student.classNum}"
+                            th:data-rate="${student.accuracyRate}"
+                            th:data-info="${student.info}"
+                            th:data-careless="${student.carelessCount ?: 0}"
+                            th:data-understanding="${student.lackOfUnderstandingCount ?: 0}"
+                            th:data-time="${student.lackOfTimeCount ?: 0}"
+                            th:data-other="${student.otherCount ?: 0}"
+                            th:checked="${student.id == selectedStudentId}"
+                            onchange="selectStudent(this)"
+                          />
+                        </td>
+                        <td th:text="${student.name}">山田 太郎</td>
+                        <td th:text="${student.classNum}">101</td>
+                        <td th:text="${student.accuracyRate}">80%</td>
+                        <td th:text="${student.info}">補足情報やステータス</td>
+                      </tr>
+                      <tr th:if="${#lists.isEmpty(students)}">
+                        <td colspan="5" style="text-align: center;">生徒データがありません。</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
               </div>
             </div>
 
@@ -97,47 +145,5 @@
 
       <footer>&copy; 2026 WebPortal.com</footer>
     </div>
-
-    <script th:inline="javascript">
-      /*
-      const mistakeData = [
-        /*[[${carelessCount}]]*/ 40,
-        /*[[${lackOfUnderstandingCount}]]*/ 30,
-        /*[[${lackOfTimeCount}]]*/ 20,
-        /*[[${otherCount}]]*/ 10
-      /*];*/
-      
-
-      const ctx = document.getElementById('reasonChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['ケアレスミス', '理解不足', '時間不足', 'その他'],
-          datasets: [{
-            data: [40, 30, 20, 10], 
-            backgroundColor: [
-              '#ff6384',
-              '#36a2eb',
-              '#ffce56',
-              '#cc65fe'
-            ],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false 
-            },
-            title: {
-              display: true,
-              text: '間違えた原因'
-            }
-          }
-        }
-      });
-    </script>
   </body>
 </html>

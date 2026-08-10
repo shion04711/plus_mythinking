@@ -418,3 +418,24 @@ footer {
   color: var(--dark-blue-color);
   margin: 0;
 }
+
+/* 送信ボタンを画面下に固定表示するスタイル */
+.submit-bar {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.95); /* スクロールしたコンテンツが透ける背景 */
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);    /* 境界の影 */
+  text-align: center;
+  z-index: 100;
+}
+
+.submit-bar button {
+  width: 100%;
+  max-width: 400px; /* スマホやPCで広がりすぎないサイズ */
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+}

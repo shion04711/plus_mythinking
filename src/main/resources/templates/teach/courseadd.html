@@ -29,11 +29,14 @@
             <input id="course_id" type="text" name="course_id" />
             <label for="course_name">コース名</label>
             <input id="course_name" type="text" name="course_name" />
-            <p>期間</p>
-            <label for="start-date">開始日</label>
-            <input id="start-date" type="date" name="start"  placeholder="開始日"/>
-            <label for="end-date">終了日</label>
-            <input id="end-date" type="date" name="end" placeholder="終了日"/>
+            <fieldset>
+              <legend>期間</legend>
+              <label for="start-date">開始日</label>
+              <input id="start-date" type="date" name="start" required />
+              
+              <label for="end-date">終了日</label>
+              <input id="end-date" type="date" name="end" required />
+            </fieldset>
             <button type="submit">作成</button>
           </form>
         </div>
