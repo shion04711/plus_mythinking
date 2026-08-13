@@ -8,11 +8,19 @@ import java.time.LocalDateTime;
  */
 public record Question(
 
-  String questionId,
+  Integer logId,          // log_id (/自動採番)
 
-  String location,
+  String studentId,       
 
-  Long fieldId,
+  Integer courseId,       
+
+  Integer reasonId,       // ミス原因ID
+
+  String questionText,    // 問題文
+
+  String correctAnswer,   // 正答
+
+  String incorrectAnswer, // 誤答
 
   LocalDateTime createdAt
 ) {
