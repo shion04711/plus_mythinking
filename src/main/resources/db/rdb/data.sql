@@ -4,9 +4,9 @@
 TRUNCATE TABLE input_logs, study_sessions, student_m, course_m, teacher_m RESTART IDENTITY CASCADE;
 
 -- 1. 先生マスタ
-INSERT INTO teacher_m (teacher_id, teacher_name) VALUES 
-('T001', '先生 太郎'),
-('T002', '先生 花子');
+INSERT INTO teacher_m (teacher_id, teacher_name, password) VALUES 
+('T001', '先生 太郎', 'pass'),
+('T002', '先生 花子', 'pass');
 
 -- 2. コースマスタ（course_id は SERIAL に任せる）
 INSERT INTO course_m (course_name, start_date, end_date, teacher_id) VALUES 
@@ -85,10 +85,10 @@ INSERT INTO template_m (template_id, reason_id, content) VALUES
 ON CONFLICT (template_id) DO NOTHING;
 
 -- 5. 生徒マスタ
-INSERT INTO student_m (student_id, course_id, student_name, class_name, student_number) VALUES 
-('20251234', 1, 'テスト 太郎', 'A組', 1),
-('20253456', 1, 'テスト 花子', 'A組', 2),
-('20209999', 2, 'テスト 五郎', 'B組', 15);
+INSERT INTO student_m (student_id, course_id, student_name, class_name, student_number, password) VALUES 
+('20251234', 1, 'テスト 太郎', 'A組', 1, 'pass'),
+('20253456', 1, 'テスト 花子', 'A組', 2, 'pass'),
+('20209999', 2, 'テスト 五郎', 'B組', 15, 'pass');
 
 -- 6. 学習記録（session_id は SERIAL に任せる）
 INSERT INTO study_sessions (student_id, course_id, created_at, study_minutes, print_count) VALUES 

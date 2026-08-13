@@ -1,9 +1,12 @@
 /*
 --テーブルがすでに存在しています というようなエラーが出たとき、こいつを実行してからやり直してください
 DROP TABLE IF EXISTS input_logs;
+DROP TABLE IF EXISTS study_sessions;
 DROP TABLE IF EXISTS student_m;
+DROP TABLE IF EXISTS template_m;
 DROP TABLE IF EXISTS error_reason_m;
 DROP TABLE IF EXISTS course_m;
+DROP TABLE IF EXISTS teacher_m;
 */
 
 /*
@@ -15,7 +18,8 @@ ON DELETE SET NULL 外部キーを含むデータが消すとき、そこのデ�
 -- 1. 先生マスタ
 CREATE TABLE IF NOT EXISTS teacher_m (
     teacher_id VARCHAR(20) PRIMARY KEY,        -- 講師ID（教職員番号など）
-    teacher_name VARCHAR(50) NOT NULL           -- 講師名
+    teacher_name VARCHAR(50) NOT NULL,          -- 講師名
+    password VARCHAR(255) NOT NULL             -- パスワード
 );
 
 -- 2. コースマスタ
@@ -37,7 +41,7 @@ CREATE TABLE IF NOT EXISTS error_reason_m (
 CREATE TABLE IF NOT EXISTS template_m (
     template_id INT PRIMARY KEY,                 -- 定型文ID
     reason_id INT REFERENCES error_reason_m(reason_id) ON DELETE CASCADE, -- ミス原因ID
-    content TEXT NOT NULL,                     -- 対策・アドバイス内容
+    content TEXT NOT NULL                     -- 対策・アドバイス内容
 );
 
 -- 5. 生徒マスタ
@@ -46,7 +50,8 @@ CREATE TABLE IF NOT EXISTS student_m (
     course_id INT REFERENCES course_m(course_id),-- 外部キー コースID
     student_name VARCHAR(50) NOT NULL,         -- 生徒名
     class_name VARCHAR(20),                    -- クラス
-    student_number INT                         -- 出席番号
+    student_number INT,                        -- 出席番号
+    password VARCHAR(255) NOT NULL             -- パスワード
 );
 
 -- 6. 学習記録（勉強時間・プリント枚数を記録）
