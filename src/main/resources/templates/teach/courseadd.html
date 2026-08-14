@@ -14,26 +14,41 @@
 
 <body>
   <header>
-    <a href="#" th:href="@{/}"><img class="header-logo" th:src="@{/img/common/webportal.png}"
-        src="../../static/img/common/webportal.png" /><strong>WebPortal.com</strong></a>
+    <a href="#" th:href="@{/}">
+      <img class="header-logo" th:src="@{/img/common/webportal.png}" src="../../static/img/common/webportal.png" />
+      <strong>WebPortal.com</strong>
+    </a>
   </header>
   <main>
     <div class="card text-center">
       <div class="card-content">
         <h1>コース作成画面</h1>
         <div>
-          <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">ログインエラーメッセージ</p>
+          <!-- Controllerの model.addAttribute("errormessage", ...) と一致 -->
+          <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">エラーメッセージ</p>
 
+          <!-- POST送信先の設定 -->
           <form method="post" th:action="@{/courseadd}">
-            <label for="course_id">コースID</label>
-            <input id="course_id" type="text" name="course_id" />
-            <label for="course_name">コース名</label>
-            <input id="course_name" type="text" name="course_name" />
-            <p>期間</p>
-            <label for="start-date">開始日</label>
-            <input id="start-date" type="date" name="start"  placeholder="開始日"/>
-            <label for="end-date">終了日</label>
-            <input id="end-date" type="date" name="end" placeholder="終了日"/>
+            
+            <label for="courseId">コースID</label>
+            <!-- name 属性を Java 側のプロパティ名 (courseId) に合わせる -->
+            <input id="courseId" type="text" name="courseId" required />
+
+            <label for="courseName">コース名</label>
+            <!-- name 属性を Java 側のプロパティ名 (courseName) に合わせる -->
+            <input id="courseName" type="text" name="courseName" required />
+
+            <fieldset>
+              <legend>期間</legend>
+              <label for="start">開始日</label>
+              <!-- CourseFormのプロパティ名に合わせて name="start" (または startDate) に指定 -->
+              <input id="start" type="date" name="start" required />
+              
+              <label for="end">終了日</label>
+              <!-- CourseFormのプロパティ名に合わせて name="end" (または endDate) に指定 -->
+              <input id="end" type="date" name="end" required />
+            </fieldset>
+            
             <button type="submit">作成</button>
           </form>
         </div>

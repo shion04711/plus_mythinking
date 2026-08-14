@@ -24,7 +24,7 @@
           src="../static/img/common/jigazo.PNG"
         /><strong>WebPortal.com</strong></a
       >
-      <a href="#" th:href="@{/logout}"
+      <a href="#" th:href="@{/studentlogout}"
         ><img th:src="@{/img/common/exit.svg}" src="../../static/img/common/exit.svg" />ログアウト
       </a>
     </header>
@@ -35,16 +35,9 @@
           <h3>一般機能</h3>
           <ul>
             <li><a href="#" th:href="@{/mondai}"> 問題追加（仮 </a></li>
-
+            <li><a href="#" th:href="@{/report/daily}"> デイリーレポート </a></li>
+            <li><a href="#" th:href="@{/report/soukatu}"> 総括レポート </a></li>
           </ul>
-          <div>
-            <h3>管理者機能</h3>
-            <ul>
-              <li>
-                <a href="#" th:href="@{/user/list}"> [DB]ユーザ管理機能 </a>
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
       <!-- .card -->

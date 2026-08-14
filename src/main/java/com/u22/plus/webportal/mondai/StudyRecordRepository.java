@@ -1,14 +1,18 @@
 package com.u22.plus.webportal.mondai;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 /**
  * 学習記録データの永続化を担当するRepository。
@@ -21,114 +25,77 @@ public class StudyRecordRepository {
   @Autowired
   private NamedParameterJdbcTemplate jdbc;
 
-  /**
-   * 学習記録本体（出席・プリント枚数・勉強時間）を保存する。
-   * 戻り値は生成された学習記録ID（mistakesの紐付けに使用）を想定。
-   */
-  public Long saveRecord(StudyRecord studyRecord) {
-
-    final String SQL_INSERT = "INSERT INTO study_record (user_id, attendance, print_count, study_minutes, created_at) "
-        + "VALUES (:userId, :attendance, :printCount, :studyMinutes, :createdAt)";
-
-    Map<String, Object> params = new HashMap<>();
-    params.put("userId", studyRecord.userId());
-    params.put("attendance", studyRecord.attendance().name());
-    params.put("printCount", studyRecord.printCount());
-    params.put("studyMinutes", studyRecord.studyMinutes());
-    params.put("createdAt", studyRecord.createdAt());
-
-    jdbc.update(SQL_INSERT, params);
-
-    // TODO: 採番方式が決まり次第、生成されたIDを取得して返すよう修正する
-    return null;
-  }
+  // DBの1行を StudyRecord オブジェクトに変換
+  private final RowMapper<StudyRecord> studyRecordRowMapper = (rs, rowNum) -> new StudyRecord(
+      rs.getInt("session_id"),
+      rs.getString("student_id"),
+      rs.getObject("course_id", Integer.class),
+      rs.getInt("study_minutes"),
+      rs.getInt("print_count"),
+      rs.getObject("created_at", LocalDateTime.class)
+  );
 
   /**
-   * 間違えた問題を1件保存する。
+   * session_id で学習記録を1件取得する。
    */
-  public void saveMistake(Long recordId, MistakeEntry mistake) {
+  public Optional<StudyRecord> findById(Integer sessionId) {
 
-    final String SQL_INSERT = "INSERT INTO mistake_entry (record_id, question_id, miss, answer, honbun, reason) "
-        + "VALUES (:recordId, :questionId, :miss, :answer, :honbun, :reason)";
+    final String SQL = "SELECT session_id, student_id, course_id, study_minutes, print_count, created_at "
+        + "FROM study_sessions WHERE session_id = :sessionId";
 
     Map<String, Object> params = new HashMap<>();
-    params.put("recordId", recordId);
-    params.put("questionId", mistake.questionId());
-    params.put("miss", mistake.miss());
-    params.put("answer", mistake.answer());
-    params.put("honbun", mistake.honbun());
-    params.put("reason", mistake.reason() != null ? mistake.reason().name() : null);
+    params.put("sessionId", sessionId);
 
-    jdbc.update(SQL_INSERT, params);
-  }
+    List<StudyRecord> list = jdbc.query(SQL, params, studyRecordRowMapper);
 
-  /**
-   * 指定した生徒(userId)の学習記録を全件取得する（新しい順）。
-   * 各学習記録に紐づく間違えた問題も合わせて取得する。
-   *
-   * 講師側の詳細ページ（生徒1人の記録一覧）で使用する。
-   */
-  public List<StudyRecord> findByUserId(String userId) {
-
-    final String SQL_RECORDS = "SELECT record_id, user_id, attendance, print_count, study_minutes, created_at "
-        + "FROM study_record WHERE user_id = :userId ORDER BY created_at DESC";
-
-    Map<String, Object> params = new HashMap<>();
-    params.put("userId", userId);
-
-    List<Map<String, Object>> recordRows = jdbc.queryForList(SQL_RECORDS, params);
-
-    List<StudyRecord> studyRecords = new ArrayList<>();
-
-    for (Map<String, Object> row : recordRows) {
-
-      Long recordId = ((Number) row.get("record_id")).longValue();
-
-      List<MistakeEntry> mistakes = findMistakesByRecordId(recordId);
-
-      StudyRecord studyRecord = new StudyRecord(
-          recordId,
-          (String) row.get("user_id"),
-          AttendanceStatus.valueOf((String) row.get("attendance")),
-          ((Number) row.get("print_count")).intValue(),
-          ((Number) row.get("study_minutes")).intValue(),
-          mistakes,
-          (LocalDateTime) row.get("created_at"));
-
-      studyRecords.add(studyRecord);
+    if (list.isEmpty()) {
+      return Optional.empty();
     }
-
-    return studyRecords;
+    return Optional.of(list.get(0));
   }
 
   /**
-   * 指定した学習記録(recordId)に紐づく間違えた問題を全件取得する。
+   * 指定した生徒IDの学習記録を全件取得する（新しい順）。
    */
-  private List<MistakeEntry> findMistakesByRecordId(Long recordId) {
+  public List<StudyRecord> findByStudentId(String studentId) {
 
-    final String SQL_MISTAKES = "SELECT question_id, miss, answer, honbun, reason "
-        + "FROM mistake_entry WHERE record_id = :recordId";
+    final String SQL = "SELECT session_id, student_id, course_id, study_minutes, print_count, created_at "
+        + "FROM study_sessions WHERE student_id = :studentId ORDER BY created_at DESC";
 
     Map<String, Object> params = new HashMap<>();
-    params.put("recordId", recordId);
+    params.put("studentId", studentId);
 
-    List<Map<String, Object>> mistakeRows = jdbc.queryForList(SQL_MISTAKES, params);
+    return jdbc.query(SQL, params, studyRecordRowMapper);
+  }
 
-    List<MistakeEntry> mistakes = new ArrayList<>();
+  /**
+   * 学習記録を1件保存する（自動採番された session_id を付与して返す）。
+   */
+  public StudyRecord save(StudyRecord record) {
 
-    for (Map<String, Object> row : mistakeRows) {
+    final String SQL_INSERT = "INSERT INTO study_sessions (student_id, course_id, study_minutes, print_count, created_at) "
+        + "VALUES (:studentId, :courseId, :studyMinutes, :printCount, COALESCE(:createdAt, CURRENT_TIMESTAMP))";
 
-      String reasonStr = (String) row.get("reason");
-      MistakeReason reason = reasonStr != null ? MistakeReason.valueOf(reasonStr) : null;
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("studentId", record.studentId());
+    params.addValue("courseId", record.courseId());
+    params.addValue("studyMinutes", record.studyMinutes() != null ? record.studyMinutes() : 0);
+    params.addValue("printCount", record.printCount() != null ? record.printCount() : 0);
+    params.addValue("createdAt", record.createdAt());
 
-      mistakes.add(new MistakeEntry(
-          (String) row.get("question_id"),
-          (String) row.get("miss"),
-          (String) row.get("answer"),
-          (String) row.get("honbun"),
-          reason));
-    }
+    KeyHolder keyHolder = new GeneratedKeyHolder();
 
-    return mistakes;
+    jdbc.update(SQL_INSERT, params, keyHolder, new String[] { "session_id" });
+
+    Integer generatedId = keyHolder.getKey().intValue();
+
+    return new StudyRecord(
+        generatedId,
+        record.studentId(),
+        record.courseId(),
+        record.studyMinutes() != null ? record.studyMinutes() : 0,
+        record.printCount() != null ? record.printCount() : 0,
+        record.createdAt() != null ? record.createdAt() : LocalDateTime.now()
+    );
   }
 }

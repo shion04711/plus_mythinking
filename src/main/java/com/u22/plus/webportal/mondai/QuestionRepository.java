@@ -7,8 +7,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  * 問題データの永続化を担当するRepository。
@@ -21,77 +25,83 @@ public class QuestionRepository {
   @Autowired
   private NamedParameterJdbcTemplate jdbc;
 
-  /**
-   * questionId が既に登録されているか確認する。
-   */
-  public boolean existsById(String questionId) {
+  // RowMapper（DBの1行を Question オブジェクトに変換）
+  private final RowMapper<Question> questionRowMapper = (rs, rowNum) -> new Question(
+      rs.getInt("log_id"),
+      rs.getString("student_id"),
+      rs.getObject("course_id", Integer.class),
+      rs.getObject("reason_id", Integer.class),
+      rs.getString("question_text"),
+      rs.getString("correct_answer"),
+      rs.getString("incorrect_answer"),
+      rs.getObject("created_at", LocalDateTime.class)
+  );
 
-    final String SQL = "SELECT COUNT(*) FROM question_m WHERE question_id = :questionId";
+  /**
+   * logId で入力ログを1件取得する。
+   */
+  public Optional<Question> findById(Integer logId) {
+
+    final String SQL = "SELECT log_id, student_id, course_id, reason_id, question_text, correct_answer, incorrect_answer, created_at "
+        + "FROM input_logs WHERE log_id = :logId";
 
     Map<String, Object> params = new HashMap<>();
-    params.put("questionId", questionId);
+    params.put("logId", logId);
 
-    Integer count = jdbc.queryForObject(SQL, params, Integer.class);
-    return count != null && count > 0;
+    List<Question> list = jdbc.query(SQL, params, questionRowMapper);
+
+    if (list.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(list.get(0));
   }
 
   /**
-   * fieldId（分野）が分野マスタに存在するか確認する。
-   * 分野マスタのテーブル名・カラム名はDB担当の実装に合わせて修正すること。
+   * 生徒IDに紐づく入力ログ一覧を取得する（新しい順）。
    */
-  public boolean existsFieldId(Long fieldId) {
+  public List<Question> findByStudentId(String studentId) {
 
-    final String SQL = "SELECT COUNT(*) FROM field_m WHERE field_id = :fieldId";
+    final String SQL = "SELECT log_id, student_id, course_id, reason_id, question_text, correct_answer, incorrect_answer, created_at "
+        + "FROM input_logs WHERE student_id = :studentId ORDER BY created_at DESC";
 
     Map<String, Object> params = new HashMap<>();
-    params.put("fieldId", fieldId);
+    params.put("studentId", studentId);
 
-    Integer count = jdbc.queryForObject(SQL, params, Integer.class);
-    return count != null && count > 0;
+    return jdbc.query(SQL, params, questionRowMapper);
   }
 
   /**
-   * 問題を1件保存する。
+   * 入力ログを1件保存する（自動採番された log_id をセットして返す）。
    */
   public Question save(Question question) {
 
-    final String SQL_INSERT = "INSERT INTO question_m (question_id, location, field_id, created_at) "
-        + "VALUES (:questionId, :location, :fieldId, :createdAt)";
+    final String SQL_INSERT = "INSERT INTO input_logs (student_id, course_id, reason_id, question_text, correct_answer, incorrect_answer, created_at) "
+        + "VALUES (:studentId, :courseId, :reasonId, :questionText, :correctAnswer, :incorrectAnswer, COALESCE(:createdAt, CURRENT_TIMESTAMP))";
 
-    Map<String, Object> params = new HashMap<>();
-    params.put("questionId", question.questionId());
-    params.put("location", question.location());
-    params.put("fieldId", question.fieldId());
-    params.put("createdAt", question.createdAt());
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    params.addValue("studentId", question.studentId());
+    params.addValue("courseId", question.courseId());
+    params.addValue("reasonId", question.reasonId());
+    params.addValue("questionText", question.questionText());
+    params.addValue("correctAnswer", question.correctAnswer());
+    params.addValue("incorrectAnswer", question.incorrectAnswer());
+    params.addValue("createdAt", question.createdAt());
 
-    jdbc.update(SQL_INSERT, params);
+    KeyHolder keyHolder = new GeneratedKeyHolder();
 
-    return question;
-  }
+    jdbc.update(SQL_INSERT, params, keyHolder, new String[] { "log_id" });
 
-  /**
-   * questionId で問題を1件取得する。
-   */
-  public Optional<Question> findById(String questionId) {
+    Integer generatedId = keyHolder.getKey().intValue();
 
-    final String SQL = "SELECT question_id, location, field_id, created_at FROM question_m WHERE question_id = :questionId";
-
-    Map<String, Object> params = new HashMap<>();
-    params.put("questionId", questionId);
-
-    List<Map<String, Object>> resultList = jdbc.queryForList(SQL, params);
-
-    if (resultList.size() != 1) {
-      return Optional.empty();
-    }
-
-    Map<String, Object> item = resultList.get(0);
-    Question question = new Question(
-        (String) item.get("question_id"),
-        (String) item.get("location"),
-        ((Number) item.get("field_id")).longValue(),
-        (LocalDateTime) item.get("created_at"));
-
-    return Optional.of(question);
+    return new Question(
+        generatedId,
+        question.studentId(),
+        question.courseId(),
+        question.reasonId(),
+        question.questionText(),
+        question.correctAnswer(),
+        question.incorrectAnswer(),
+        question.createdAt() != null ? question.createdAt() : LocalDateTime.now()
+    );
   }
 }

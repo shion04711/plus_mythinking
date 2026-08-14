@@ -1,0 +1,17 @@
+伝言用のりどみです
+
+input_logs（入力ログ）の内容は一週間ほどRDBで保持しておいて、その後はバッチ処理でNoSQL型のDBにアーカイブします
+細かいことは割と適当に決めているので、詳しい仕様は追々決めていくといいと思います
+この場合はドキュメント型のJSON形式で保存するとよさそうです
+最終的にはdata.sqlのダミーデータだけ消して、それ以外は残しておく感じになります
+
+先生と生徒の登録画面（teachadd/studentadd)追加したからこれようにコントローラー修正頼みたい。
+あとstudentとteachのth:action@{}の値を分けたからコントローラーでの修正も頼みたいlogoutとかインデックスとかログインとか
+
+
+StudentRepositoryとTeacherRepository    未修正、まだ反映されてないっぽいので少し保留にします
+また、error_reason_m（ミス原因マスタ）とtemplate_m（定型文マスタ）を扱うための諸々も必要になると思います、要相談
+
+CourseRepository    修正済、講師IDの追加と自動採番に対応させました
+QuestionRepository  input_logsに対応させました
+StudyRecordRepository   study_sessionsに対応させました
