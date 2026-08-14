@@ -20,6 +20,6 @@ public class StudyRecordViewService {
    * 指定した生徒(userId)の学習記録を全件取得する（新しい順）。
    */
   public List<StudyRecord> getStudyRecords(String userId) {
-    return studyRecordRepository.findByUserId(userId);
+    return studyRecordRepository.findByStudentId(userId);
   }
 }

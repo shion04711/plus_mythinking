@@ -33,7 +33,7 @@ public class ReportService {
    */
   public DailyReportView getDailyReport(String userId) {
 
-    List<StudyRecord> records = studyRecordRepository.findByUserId(userId);
+    List<StudyRecord> records = studyRecordRepository.findByStudentId(userId);
 
     List<StudyRecord> todayRecords = records.stream()
         .filter(this::isToday)
@@ -62,7 +62,7 @@ public class ReportService {
    */
   public SummaryReportView getSummaryReport(String userId) {
 
-    List<StudyRecord> records = studyRecordRepository.findByUserId(userId);
+    List<StudyRecord> records = studyRecordRepository.findByStudentId(userId);
 
     int allTime = sumStudyMinutes(records);
     int allMaisu = sumPrintCount(records);

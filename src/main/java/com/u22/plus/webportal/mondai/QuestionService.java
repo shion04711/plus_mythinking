@@ -25,6 +25,7 @@ public class QuestionService {
     validate(form);
 
     Question question = new Question(
+        null,
         form.questionId().trim(),
         form.location().trim(),
         form.fieldId(),

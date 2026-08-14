@@ -28,15 +28,17 @@ public class CourseService {
     LocalDate startDate = parseDate(form.getStart(), "開始日");
     LocalDate endDate = parseDate(form.getEnd(), "終了日");
 
+    Integer courseId = Integer.valueOf(form.getCourseId().trim());
     if (startDate.isAfter(endDate)) {
       throw new CourseRegistException("開始日は終了日より前の日付にしてください。");
     }
-
+    
     Course course = new Course(
-        form.getCourseId().trim(),
+        courseId,
         form.getCourseName().trim(),
         startDate,
-        endDate);
+        endDate,
+      "teacherId");
 
     return courseRepository.save(course);
   }
