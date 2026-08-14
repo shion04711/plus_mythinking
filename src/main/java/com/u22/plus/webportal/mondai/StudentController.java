@@ -8,9 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.u22.plus.webportal.user.LoginServive;
-import com.u22.plus.webportal.user.UserData;
-import com.u22.plus.webportal.user.UserRepository;
+import com.u22.plus.webportal.user.StudentLoginService;
+import com.u22.plus.webportal.user.StudentData;
+import com.u22.plus.webportal.user.StudentRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -28,10 +28,10 @@ public class StudentController {
   private StudyRecordViewService studyRecordViewService;
 
   @Autowired
-  private UserRepository userRepository;
+  private StudentRepository userRepository;
 
   @Autowired
-  private LoginServive loginServive;
+  private StudentLoginService loginServive;
 
   @Autowired
   private HttpSession session;
@@ -43,14 +43,14 @@ public class StudentController {
       return "login";
     }
 
-    UserData loginUser = (UserData) session.getAttribute("userData");
+    // StudentData loginUser = (StudentData) session.getAttribute("userData");
 
-    if (!isTeacherRole(loginUser.role())) {
-      model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");
-      return "login";
-    }
+    // if (!isTeacherRole(loginUser.role())) {
+    //   model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");
+    //   return "login";
+    // }
 
-    List<UserData> students = userRepository.findGeneralUsers();
+    List<StudentData> students = userRepository.findAll();
 
     model.addAttribute("students", students);
 
@@ -64,12 +64,12 @@ public class StudentController {
       return "login";
     }
 
-    UserData loginUser = (UserData) session.getAttribute("userData");
+    // StudentData loginUser = (StudentData) session.getAttribute("userData");
 
-    if (!isTeacherRole(loginUser.role())) {
-      model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");
-      return "login";
-    }
+    // if (!isTeacherRole(loginUser.role())) {
+    //   model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");
+    //   return "login";
+    // }
 
     List<StudyRecord> studyRecords = studyRecordViewService.getStudyRecords(userId);
 
@@ -82,7 +82,7 @@ public class StudentController {
   /**
    * 講師権限（ROLE_ADMIN・ROLE_TOP）かどうかを判定する。
    */
-  private boolean isTeacherRole(String role) {
-    return "ROLE_ADMIN".equals(role) || "ROLE_TOP".equals(role);
-  }
+//   private boolean isTeacherRole(String role) {
+//     return "ROLE_ADMIN".equals(role) || "ROLE_TOP".equals(role);
+//   }
 }

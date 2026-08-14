@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.u22.plus.webportal.user.LoginServive;
-import com.u22.plus.webportal.user.UserData;
+import com.u22.plus.webportal.user.StudentLoginService;
+import com.u22.plus.webportal.user.StudentData;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -19,7 +19,7 @@ public class MondaiController {
     private StudyRecordService studyRecordService;
 
     @Autowired
-    private LoginServive loginServive;
+    private StudentLoginService loginServive;
 
     @Autowired
     private HttpSession session;
@@ -36,10 +36,10 @@ public class MondaiController {
             return "login";
         }
 
-        UserData userData = (UserData) session.getAttribute("userData");
+        StudentData userData = (StudentData) session.getAttribute("userData");
 
         try {
-            studyRecordService.registStudyRecord(userData.userId(), form);
+            studyRecordService.registStudyRecord(userData.studentId(), form);
         } catch (StudyRecordRegistException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "mondai/input";
