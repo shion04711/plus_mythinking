@@ -104,4 +104,52 @@ public class QuestionRepository {
         question.createdAt() != null ? question.createdAt() : LocalDateTime.now()
     );
   }
+
+  /**
+   * 特定の生徒・コースにおける誤答原因別の件数を集計する。
+   * 
+   * @param studentId 生徒ID
+   * @param courseId  コースID
+   * @param startDate 集計開始日時（累計の場合は null）
+   * @param endDate   集計終了日時（累計の場合は null）
+   * @return 原因IDごとの件数リスト
+   */
+  public List<ReasonCountData> countGroupByReason(
+      String studentId, 
+      Integer courseId, 
+      LocalDateTime startDate, 
+      LocalDateTime endDate) {
+
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT reason_id, COUNT(*) AS count ");
+    sql.append("FROM input_logs ");
+    sql.append("WHERE student_id = :studentId ");
+    sql.append("  AND course_id = :courseId ");
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("studentId", studentId);
+    params.put("courseId", courseId);
+
+    // 開始日時の指定がある場合
+    if (startDate != null) {
+      sql.append("  AND created_at >= :startDate ");
+      params.put("startDate", startDate);
+    }
+
+    // 終了日時の指定がある場合
+    if (endDate != null) {
+      sql.append("  AND created_at <= :endDate ");
+      params.put("endDate", endDate);
+    }
+
+    sql.append("GROUP BY reason_id ");
+    sql.append("ORDER BY reason_id ASC");
+
+    return jdbc.query(sql.toString(), params, (rs, rowNum) -> 
+        new ReasonCountData(
+            rs.getInt("reason_id"),
+            rs.getLong("count")
+        )
+    );
+  }
 }
