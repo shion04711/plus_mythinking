@@ -8,9 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.u22.plus.webportal.user.StudentLoginService;
 import com.u22.plus.webportal.user.StudentData;
 import com.u22.plus.webportal.user.StudentRepository;
+import com.u22.plus.webportal.user.TeacherLoginService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -31,7 +31,7 @@ public class StudentController {
   private StudentRepository userRepository;
 
   @Autowired
-  private StudentLoginService loginServive;
+  private TeacherLoginService loginServive;
 
   @Autowired
   private HttpSession session;
@@ -40,7 +40,7 @@ public class StudentController {
   public String getStudentList(Model model) {
 
     if (!loginServive.isLogin()) {
-      return "login";
+      return "teacher/login";
     }
 
     // StudentData loginUser = (StudentData) session.getAttribute("userData");
@@ -64,7 +64,7 @@ public class StudentController {
       return "login";
     }
 
-    // StudentData loginUser = (StudentData) session.getAttribute("userData");
+    // TeacherData loginUser = (TeacherData) session.getAttribute("userData");
 
     // if (!isTeacherRole(loginUser.role())) {
     //   model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");

@@ -32,6 +32,6 @@ public class QuestionController {
             return "mondai/question-input";
         }
 
-        return "index";
+        return "teach/teachindex";
     }
 }

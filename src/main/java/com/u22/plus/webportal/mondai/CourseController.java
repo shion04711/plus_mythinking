@@ -39,7 +39,7 @@ public class CourseController {
   public String postCourseAdd(Model model, @ModelAttribute CourseForm form) {
 
     if (!loginServive.isLogin()) {
-      return "login";
+      return "teach/teachlogin";
     }
 
     // TeacherData loginUser = (TeacherData) session.getAttribute("userData");
@@ -56,7 +56,7 @@ public class CourseController {
       return "courseadd";
     }
 
-    return "index";
+    return "teach/teachindex";
   }
 
   /**
