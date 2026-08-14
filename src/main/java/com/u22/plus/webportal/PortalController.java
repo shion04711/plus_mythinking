@@ -3,20 +3,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.u22.plus.webportal.user.LoginServive;
+import com.u22.plus.webportal.user.StudentLoginService;
+import com.u22.plus.webportal.user.TeacherLoginService;
 
 
 @Controller
 public class PortalController {
 
   @Autowired
-  private LoginServive loginServive;
+  private StudentLoginService studentLoginService;
+
+  @Autowired
+  private TeacherLoginService teacherLoginService;
 
   @GetMapping("/")
   public String index() {
-    if (!loginServive.isLogin()) {
-      return "login";
+
+    if (teacherLoginService.isLogin()) {
+      return "teach/teachindex";
     }
-    return "index";
+
+    if (!studentLoginService.isLogin()) {
+      return "student/login";
     }
+
+    return "student/index";
+  }
 }
