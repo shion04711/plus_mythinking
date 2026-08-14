@@ -33,7 +33,7 @@ public class MondaiController {
     public String PostMondai(Model model, @ModelAttribute StudyRecordForm form) {
 
         if (!loginServive.isLogin()) {
-            return "login";
+            return "student/login";
         }
 
         StudentData userData = (StudentData) session.getAttribute("userData");
@@ -45,6 +45,6 @@ public class MondaiController {
             return "mondai/input";
         }
 
-        return "index";
+        return "student/index";
     }
 }
