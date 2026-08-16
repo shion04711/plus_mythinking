@@ -24,22 +24,15 @@
   <body th:style="'background-image: url(' + @{/img/common/images.png} + ');'">
     <div>
       <header>
-        <a href="#" th:href="@{/}">
-          <img
-            class="header-logo"
-            th:src="@{/img/common/jigazo.PNG}"
-            src="../static/img/common/jigazo.PNG"
-          />
-          <strong>WebPortal.com</strong>
-        </a>
-        <a href="#" th:href="@{/logout}">
-          <img th:src="@{/img/common/exit.svg}" src="../../static/img/common/exit.svg" />ログアウト
-        </a>
-      </header>
+    <a href="#" th:href="@{/}"><img class="header-logo-main" th:src="@{/img/icon3.png}"
+        src="../../static/img/icon3.png" /><strong> PLUS</strong></a>
+    <a href="#" th:href="@{/logout}"><img class="header-logo-exit" th:src="@{/img/common/exit.svg}"
+        src="../../static/img/common/exit.svg" />ログアウト </a>
+  </header>
 
       <main>
+        <h1 class="page-title">情報収集画面</h1>
         <div class="card">
-          <h1 class="page-title">情報収集画面</h1>
           <div class="card-content">
             
             <div class="dashboard-grid">
@@ -94,8 +87,6 @@
           </div>
         </div>
       </main>
-
-      <footer>&copy; 2026 WebPortal.com</footer>
     </div>
 
     <script th:inline="javascript">

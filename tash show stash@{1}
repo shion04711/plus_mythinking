@@ -1,0 +1,154 @@
+[1mdiff --git a/ReadMe.md b/ReadMe.md[m
+[1mindex 7d5bb62..7f8239b 100644[m
+[1m--- a/ReadMe.md[m
+[1m+++ b/ReadMe.md[m
+[36m@@ -1,30 +1 @@[m
+[31m-# Web アプリケーション構築 実習ワークスペース[m
+[31m-[m
+[31m-## VSCode に最初にインストールする 拡張機能[m
+[31m-[m
+[31m-### 入れ方[m
+[31m-[m
+[31m-1. 左の「拡張機能」ボタンを押す[m
+[31m-1. 検索ボックスに「@recommended」を入れる[m
+[31m-1. 「ワークスペースの推奨事項」に表示されている Extension をインストール[m
+[31m-[m
+[31m-## PostgreSQL DB への接続[m
+[31m-[m
+[31m-### PostgreSQL 拡張機能の活用[m
+[31m-[m
+[31m-1. VSCode 左側のアイコンの中から「Database」を開く[m
+[31m-[m
+[31m-2. 「Create Connection」を押す[m
+[31m-[m
+[31m-3. 「Connect」内で以下の設定を入力し、下部の「＋ Connect」ボタンを押す[m
+[31m-[m
+[31m-- Name : DB[m
+[31m-- Host : 127.0.0.1 ※デフォルト[m
+[31m-- Port : 5432 ※デフォルト[m
+[31m-- Username : postgres ※デフォルト[m
+[31m-- Password : postgres[m
+[31m-- Database : postgres ※デフォルト[m
+[31m-[m
+[31m-4. PostgreSQL の DB に接続されれば準備完了[m
+[31m-[m
+[31m-- ※エラーになった場合は、PostgreSQL のインストール状況を確認する[m
+[32m+[m[32m# plus[m
+\ No newline at end of file[m
+[1mdiff --git a/src/main/resources/db/data.sql b/src/main/resources/db/data.sql[m
+[1mdeleted file mode 100644[m
+[1mindex 992073a..0000000[m
+[1m--- a/src/main/resources/db/data.sql[m
+[1m+++ /dev/null[m
+[36m@@ -1,39 +0,0 @@[m
+[31m-/* データ削除：INSERT文と逆順で記載する */[m
+[31m-[m
+[31m-DELETE FROM user_m;[m
+[31m-[m
+[31m-/* ユーザーマスタのデータ（ADMIN権限） */[m
+[31m-INSERT INTO[m
+[31m-  user_m (user_id, PASSWORD, user_name, ROLE, enabled)[m
+[31m-VALUES[m
+[31m-  ([m
+[31m-    'taro@xxx.co.jp',[m
+[31m-    'p@ss',[m
+[31m-    '情報太郎',[m
+[31m-    'ROLE_ADMIN',[m
+[31m-    TRUE[m
+[31m-  );[m
+[31m-[m
+[31m-/* ユーザーマスタのデータ（上位権限） */[m
+[31m-INSERT INTO[m
+[31m-  user_m (user_id, PASSWORD, user_name, ROLE, enabled)[m
+[31m-VALUES[m
+[31m-  ([m
+[31m-    'hanako@xxx.co.jp',[m
+[31m-    'p@ss',[m
+[31m-    '情報花子',[m
+[31m-    'ROLE_TOP',[m
+[31m-    TRUE[m
+[31m-  );[m
+[31m-[m
+[31m-/* ユーザーマスタのデータ（一般権限） */[m
+[31m-INSERT INTO[m
+[31m-  user_m (user_id, PASSWORD, user_name, ROLE, enabled)[m
+[31m-VALUES[m
+[31m-  ([m
+[31m-    'goro@xxx.co.jp',[m
+[31m-    'p@ss',[m
+[31m-    '情報五郎',[m
+[31m-    'ROLE_GENERAL',[m
+[31m-    TRUE[m
+[31m-  );[m
+[1mdiff --git a/src/main/resources/db/schema.sql b/src/main/resources/db/schema.sql[m
+[1mdeleted file mode 100644[m
+[1mindex 0fa525d..0000000[m
+[1m--- a/src/main/resources/db/schema.sql[m
+[1m+++ /dev/null[m
+[36m@@ -1,13 +0,0 @@[m
+[31m-/* テーブル削除：CREATE文と逆順で記載する */[m
+[31m-[m
+[31m-DROP TABLE IF EXISTS user_m;[m
+[31m-[m
+[31m-/* ユーザーマスタ */[m
+[31m-CREATE TABLE[m
+[31m-  user_m ([m
+[31m-    user_id VARCHAR(50) PRIMARY KEY,[m
+[31m-    PASSWORD VARCHAR(100),[m
+[31m-    user_name VARCHAR(50),[m
+[31m-    ROLE VARCHAR(50),[m
+[31m-    enabled BOOLEAN[m
+[31m-  );[m
+[1mdiff --git a/src/main/resources/static/css/dojo.css b/src/main/resources/static/css/dojo.css[m
+[1mdeleted file mode 100644[m
+[1mindex 9e6f0c4..0000000[m
+[1m--- a/src/main/resources/static/css/dojo.css[m
+[1m+++ /dev/null[m
+[36m@@ -1,47 +0,0 @@[m
+[31m-@charset "UTF-8";[m
+[31m-/* 文字エンコーディングをUTF-8に設定 */[m
+[31m-[m
+[31m-/*[m
+[31m- アルゴリズム道場のCSS設定.[m
+[31m- */[m
+[31m-[m
+[31m-/** 文字フォントが赤くならないように設定 */[m
+[31m-code {[m
+[31m-  color: black !important; /* code要素のテキスト色を黒に設定。!importantで他のスタイルより優先度を高くする */[m
+[31m-}[m
+[31m-[m
+[31m-/** 画像サイズを設定 */[m
+[31m-#level5_img,[m
+[31m-#level6_img {[m
+[31m-  width: 100%; /* 画像の幅を親要素の100%に設定 */[m
+[31m-}[m
+[31m-[m
+[31m-/** 入力例＆出力例ボックス用 */[m
+[31m-.content-box-e {[m
+[31m-  min-width: 250px; /* ボックスの最小幅を250pxに設定 */[m
+[31m-  margin: 5px; /* 周囲の要素からの距離を5pxに設定 */[m
+[31m-  padding: 10px; /* 内側の余白を10pxに設定 */[m
+[31m-  border-radius: 3px; /* 角を軽く丸める */[m
+[31m-  background-color: #f0eeee; /* 背景色を淡い灰色に設定 */[m
+[31m-  border: 1px solid #c7c7c7; /* 枠線を設定 */[m
+[31m-}[m
+[31m-[m
+[31m-/** 問題ボックス用 */[m
+[31m-.content-box-q {[m
+[31m-  min-width: 250px; /* ボックスの最小幅を250pxに設定 */[m
+[31m-  margin: 5px; /* 周囲の要素からの距離を5pxに設定 */[m
+[31m-  padding: 16px 48px 16px 48px; /* 内側の余白を上下16px、左右48pxに設定 */[m
+[31m-  border-radius: 3px; /* 角を軽く丸める */[m
+[31m-  background-color: #ffffff; /* 背景色を白に設定 */[m
+[31m-  border: 1px solid #c7c7c7; /* 枠線を設定 */[m
+[31m-}[m
+[31m-[m
+[31m-/** 入力ボックス用(黄色) */[m
+[31m-.content-box-ex {[m
+[31m-  min-width: 250px; /* ボックスの最小幅を250pxに設定 */[m
+[31m-  margin: 5px; /* 周囲の要素からの距離を5pxに設定 */[m
+[31m-  padding: 10px; /* 内側の余白を10pxに設定 */[m
+[31m-  border-radius: 3px; /* 角を軽く丸める */[m
+[31m-  background-color: rgb(255 250 142); /* 背景色を明るい黄色に設定 */[m
+[31m-  border: 1px solid #c7c7c7; /* 枠線を設定 */[m
+[31m-}[m

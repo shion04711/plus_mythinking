@@ -14,13 +14,13 @@
 
 <body>
   <header>
-    <a href="#" th:href="@{/}"><img class="header-logo" th:src="@{/img/common/webportal.png}"
-        src="../../static/img/common/webportal.png" /><strong>WebPortal.com</strong></a>
+    <a href="#" th:href="@{/}"><img class="header-logo-main" th:src="@{/img/icon3.png}"
+        src="../../static/img/icon3.png" /><strong> PLUS</strong></a>
   </header>
   <main>
+    <h1 class="page-title">ログイン</h1>
     <div class="card text-center">
       <div class="card-content">
-        <h1>ログイン</h1>
         <div>
           <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">ログインエラーメッセージ</p>
 
@@ -40,7 +40,6 @@
     </div>
     <!-- .card -->
   </main>
-  <footer>&copy; plus.com</footer>
 </body>
 
 </html>

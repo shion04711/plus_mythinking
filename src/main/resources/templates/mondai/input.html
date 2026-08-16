@@ -14,9 +14,9 @@
 
 <body th:style="'background-image: url(' + @{/img/common/images.png} + ');'">
   <header>
-    <a href="#" th:href="@{/}"><img class="header-logo" th:src="@{/img/common/jigazo.PNG}"
-        src="../../static/img/common/jigazo.PNG" /><strong>WebPortal.com</strong></a>
-    <a href="#" th:href="@{/logout}"><img th:src="@{/img/common/exit.svg}"
+    <a href="#" th:href="@{/}"><img class="header-logo-main" th:src="@{/img/icon3.png}"
+        src="../../static/img/icon3.png" /><strong> PLUS</strong></a>
+    <a href="#" th:href="@{/logout}"><img class="header-logo-exit" th:src="@{/img/common/exit.svg}"
         src="../../static/img/common/exit.svg" />ログアウト </a>
   </header>
 
@@ -65,7 +65,7 @@
               <option value="OTHER">その他</option>
             </select>
 
-            <p>間違えた問題</p>
+            <label>間違えた問題</label>
             <label for="honbun-0"></label>
             <textarea id="honbun-0" name="entries[0].honbun" cols="30" rows="5"
               placeholder="間違えた問題を入力して下さい"></textarea>
@@ -79,7 +79,7 @@
     </form>
   </main>
 
-  <footer>&copy; 2026 WebPortal.com</footer>
+  <footer></footer>
 
   <script th:src="@{/js/custom-time-picker.js}" src="../../static/js/custom-time-picker.js"></script>
   <script th:src="@{/js/mistake-cards.js}" src="../../static/js/mistake-cards.js"></script>
