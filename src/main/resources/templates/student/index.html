@@ -17,12 +17,17 @@
   <body th:style="'background-image: url(' + @{/img/common/images.png} + ');'">
     <div >
     <header>
-      <a href="#" th:href="@{/}"><img class="header-logo-main" th:src="@{/img/icon3.png}"
-        src="../../static/img/icon3.png" /><strong> PLUS</strong></a>
-      <a href="#" th:href="@{/studentlogout}"
-        ><img th:src="@{/img/common/exit.svg}" src="../../static/img/common/exit.svg" />ログアウト
-      </a>
-    </header>
+<a href="#" th:href="@{/}">
+  <img class="header-logo-main" th:src="@{/img/icon3.png}"
+      src="../../static/img/icon3.png" />
+  <strong>PLUS</strong>
+</a>
+<a href="#" th:href="@{/studentlogout}">
+  <img class="header-logo-exit" th:src="@{/img/common/exit.svg}"
+      src="../../static/img/common/exit.svg" />
+  ログアウト
+</a>
+  </header>
     <main>
       <h1 class="page-title"><span th:text="${session.userData.userName}">XXXX</span>さんの<br>ダッシュボード</h1>
       <div class="card">

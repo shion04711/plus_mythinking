@@ -130,6 +130,7 @@ button:not(.mistake-card__close) {
   font-size: 16px;
   cursor: pointer;/* マウスカーソルをポインターに */
   margin-top: 30px;/*ボタンの上の余白*/
+  transition: transform 0.1s ease;
 }
 
 button:hover {
@@ -139,9 +140,9 @@ button:hover {
 }
 
 button:active {
-  /* ボタンをクリックした時のスタイル */
-  background: var(--dark-blue-color);
-  opacity: 1; /* 透明度 */
+  background: var(--primary-color);
+  transform: scale(0.95);
+  transition: transform 0.1s;
 }
 
 table {
@@ -459,10 +460,11 @@ footer {
   left: 0;
   width: 100%;
   padding: 12px 16px;
-  background-color: rgba(255, 255, 255, 0.95); /* スクロールしたコンテンツが透ける背景 */
+  background-color: var(--white-color);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);    /* 境界の影 */
   text-align: center;
   z-index: 100;
+  border-radius: 15px 15px 0 0;
 }
 
 .submit-bar button {
@@ -471,4 +473,7 @@ footer {
   padding: 12px;
   font-size: 1rem;
   font-weight: bold;
+  margin-top: 0;
+  border-radius: 15px;
+}
 }

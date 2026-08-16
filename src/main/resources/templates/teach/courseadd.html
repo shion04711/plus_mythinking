@@ -14,10 +14,16 @@
 
 <body>
   <header>
-    <a href="#" th:href="@{/}"><img class="header-logo-main" th:src="@{/img/icon3.png}"
-        src="../../static/img/icon3.png" /><strong> PLUS</strong></a>
-    <a href="#" th:href="@{/logout}"><img class="header-logo-exit" th:src="@{/img/common/exit.svg}"
-        src="../../static/img/common/exit.svg" />ログアウト </a>
+<a href="#" th:href="@{/}">
+  <img class="header-logo-main" th:src="@{/img/icon3.png}"
+      src="../../static/img/icon3.png" />
+  <strong>PLUS</strong>
+</a>
+<a href="#" th:href="@{/studentlogout}">
+  <img class="header-logo-exit" th:src="@{/img/common/exit.svg}"
+      src="../../static/img/common/exit.svg" />
+  ログアウト
+</a>
   </header>
   <main>
     <h1 class="page-title">コース作成画面</h1>
