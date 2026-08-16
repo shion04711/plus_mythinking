@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.u22.plus.webportal.user.LoginServive;
-import com.u22.plus.webportal.user.UserData;
+import com.u22.plus.webportal.user.StudentLoginService;
+import com.u22.plus.webportal.user.StudentData;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -21,7 +21,7 @@ public class ReportController {
   private ReportService reportService;
 
   @Autowired
-  private LoginServive loginServive;
+  private StudentLoginService loginServive;
 
   @Autowired
   private HttpSession session;
@@ -33,9 +33,9 @@ public class ReportController {
       return "login";
     }
 
-    UserData loginUser = (UserData) session.getAttribute("userData");
+    StudentData loginUser = (StudentData) session.getAttribute("userData");
 
-    DailyReportView report = reportService.getDailyReport(loginUser.userId());
+    DailyReportView report = reportService.getDailyReport(loginUser.studentId());
 
     model.addAttribute("dailytime", report.dailyTime());
     model.addAttribute("dailyprint", report.dailyPrint());
@@ -55,9 +55,9 @@ public class ReportController {
       return "login";
     }
 
-    UserData loginUser = (UserData) session.getAttribute("userData");
+    StudentData loginUser = (StudentData) session.getAttribute("userData");
 
-    SummaryReportView report = reportService.getSummaryReport(loginUser.userId());
+    SummaryReportView report = reportService.getSummaryReport(loginUser.studentId());
 
     model.addAttribute("alltime", report.allTime());
     model.addAttribute("allmaisu", report.allMaisu());

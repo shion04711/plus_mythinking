@@ -8,12 +8,14 @@ import java.time.LocalDate;
  */
 public record Course(
 
-  String courseId,
+  Integer courseId,
 
   String courseName,
 
   LocalDate startDate,
 
-  LocalDate endDate
+  LocalDate endDate,
+
+  String teacherId
 ) {
 }

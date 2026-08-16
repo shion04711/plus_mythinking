@@ -25,64 +25,73 @@
     <h1 class="page-title">デイリーレポート</h1>
     <div class="card text-center">
       <div class="card-content">
+<<<<<<< HEAD
+=======
+        <h1>デイリーレポート</h1>
+>>>>>>> 1d9ccaba37e38e9af85c449dfc4a3b1e1a435efe
 
-<div class="daily-report-wrapper">
-        <div class="report-container">
-          
-          <div class="report-item">
-            <div class="report-row">
-              <span class="label">勉強時間</span>
-              <span class="value" th:text="${dailytime}">XXX</span>
+        <div class="daily-report-wrapper">
+          <div class="report-container">
+            
+            <div class="report-item">
+              <div class="report-row">
+                <span class="label">勉強時間</span>
+                <span class="value" th:text="${dailytime}">XXX</span>
+              </div>
+              <div class="report-row">
+                <span class="label">プリント枚数</span>
+                <span class="value" th:text="${dailyprint}">XXX</span>
+              </div>
             </div>
-            <div class="report-row">
-              <span class="label">プリント枚数</span>
-              <span class="value" th:text="${dailyprint}">XXX</span>
-            </div>
-          </div>
 
-          <div class="report-item">
-            <div class="report-row">
-              <span class="label">累計勉強時間</span>
-              <span class="value" th:text="${alltime}">XXX</span>
+            <div class="report-item">
+              <div class="report-row">
+                <span class="label">累計勉強時間</span>
+                <span class="value" th:text="${alltime}">XXX</span>
+              </div>
+              <div class="report-row">
+                <span class="label">累計プリント枚数</span>
+                <span class="value" th:text="${allmaisu}">XXX</span>
+              </div>
             </div>
-            <div class="report-row">
-              <span class="label">累計プリント枚数</span>
-              <span class="value" th:text="${allmaisu}">XXX</span>
-            </div>
-          </div>
 
-          <div class="report-item">
+            <div class="report-item">
               <span class="label">間違えた原因</span>
               <div class="chart-container">
                 <canvas id="reasonChart"></canvas>
               </div>
             </div>
 
-          <div class="report-item">
-            <span class="label">今までのデータとの比較</span>
-            <p class="value" th:text="${sikentext}">XXXXXX</p>
-          </div>
+            <div class="report-item">
+              <span class="label">今までのデータとの比較</span>
+              <p class="value" th:text="${sikentext}">XXXXXX</p>
+            </div>
 
-          <div class="report-item">
-            <span class="label">次回気を付けること</span>
-            <p class="value" th:text="${sikentext}">XXXXXX</p>
-          </div>
+            <div class="report-item">
+              <span class="label">次回気を付けること</span>
+            
+              <p class="value" th:text="${nextAdviceText}">XXXXXX</p>
+            </div>
 
+          </div>
         </div>
       </div>
-</div>
+    </div>
     <!-- .card -->
   </main>
 
+  <!-- th:inline="javascript" を追加してモデルデータをJSで扱えるように指定 -->
+  <script th:inline="javascript">
+    /* Controllerから渡された reasonCounts を取得 (データがない場合の初期値をフォールバック指定) */
+    const reasonCountsData = /*[[${reasonCounts}]]*/ [40, 30, 20, 10];
 
-<script>
     const ctx = document.getElementById('reasonChart').getContext('2d');
     new Chart(ctx, {
       type: 'pie', // 円グラフを指定
       data: {
         labels: ['ケアレスミス', '理解不足', '時間不足', 'その他'], 
         datasets: [{
-          data: [40, 30, 20, 10], 
+          data: reasonCountsData, // 受け取った動的データをセット
           backgroundColor: [
             '#ff6384',
             '#36a2eb',

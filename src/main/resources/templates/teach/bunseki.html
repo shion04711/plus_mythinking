@@ -15,11 +15,68 @@
     
     <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" />
     <link rel="stylesheet" th:href="@{/css/report.css}" href="../../static/css/report.css" />
-    <link rel="stylesheet" th:href="@{/css/report.css}" href="../../static/css/bunseki.css" />
+    <link rel="stylesheet" th:href="@{/css/bunseki.css}" href="../../static/css/bunseki.css" />
 
+    <!-- Chart.js ライブラリ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- 外部JSファイルの読み込み -->
+    <script th:src="@{/js/tableSort.js}" src="../../static/js/tableSort.js"></script>
+    <script th:src="@{/js/dashboard.js}" src="../../static/js/dashboard.js"></script>
 
+    <style>
+      .sortable {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+      }
+      .sortable:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      .sort-icon {
+        font-size: 0.8em;
+        margin-left: 4px;
+        color: #888;
+      }
+      .student-detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+      }
+      .student-detail-list li {
+        margin-bottom: 4px;
+      }
+
+      /* ▼ 切替スイッチ（デイリー/総括）のデザイン */
+      .mode-switch-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .segmented-control {
+        display: inline-flex;
+        background-color: #e2e8f0;
+        border-radius: 8px;
+        padding: 4px;
+      }
+      .segmented-control input[type="radio"] {
+        display: none;
+      }
+      .segmented-control label {
+        padding: 8px 24px;
+        font-weight: bold;
+        font-size: 0.95rem;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        color: #4a5568;
+      }
+      .segmented-control input[type="radio"]:checked + label {
+        background-color: #3182ce;
+        color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    </style>
   </head>
   <body th:style="'background-image: url(' + @{/img/common/images.png} + ');'">
     <div>
@@ -33,102 +90,121 @@
       <main>
         <h1 class="page-title">情報収集画面</h1>
         <div class="card">
+<<<<<<< HEAD
+=======
+          <h1 class="page-title">情報収集画面</h1>
+          
+>>>>>>> 1d9ccaba37e38e9af85c449dfc4a3b1e1a435efe
           <div class="card-content">
             
-            <div class="dashboard-grid">
-              <div class="student-info-box">
-                <p class="fw-bold">選択中の生徒の情報</p>
-                <p th:text="${selectedStudentName}">生徒名</p>
+            <form th:action="@{/dashboard}" method="get" id="dashboardForm">
+              
+              <!-- ▼ デイリー / 総括 切替トグルスイッチ -->
+              <div class="mode-switch-container">
+                <div class="segmented-control">
+                  <input
+                    type="radio"
+                    id="modeDaily"
+                    name="mode"
+                    value="daily"
+                    checked
+                    onchange="toggleMode('daily')"
+                  />
+                  <label for="modeDaily">デイリー（本日）</label>
+
+                  <input
+                    type="radio"
+                    id="modeSummary"
+                    name="mode"
+                    value="summary"
+                    onchange="toggleMode('summary')"
+                  />
+                  <label for="modeSummary">総括（全期間）</label>
+                </div>
               </div>
 
-              <div class="chart-container-box">
-                <canvas id="reasonChart"></canvas>
-              </div>
-            </div>
+              <!-- ダッシュボード グリッド領域 -->
+              <div class="dashboard-grid">
+                <!-- 選択中の生徒の情報表示領域 -->
+                <div class="student-info-box">
+                  <p class="fw-bold">
+                    選択中の生徒の情報
+                    <span class="badge" th:text="${mode == 'summary' ? '【総括】' : '【デイリー】'}" style="font-size:0.8em; color:#3182ce;"></span>
+                  </p>
+                  <ul class="student-detail-list">
+                    <li><strong>名前:</strong> <span id="displayStudentName" th:text="${selectedStudentName}">未選択</span></li>
+                    <li><strong>クラス番号:</strong> <span id="displayClassNum" th:text="${selectedClassNum}">-</span></li>
+                    <li><strong>ミスの数:</strong> <span id="displayMissCount" th:text="${selectedMissCount}">-</span></li>
+                    <li><strong>備考:</strong> <span id="displayStudentInfo" th:text="${selectedStudentInfo}">生徒を選択してください</span></li>
+                  </ul>
+                </div>
 
-            <div class="student-list-container">
-              <div class="status-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
+                <div class="chart-container-box">
+                  <canvas id="reasonChart"></canvas>
+                </div>
               </div>
 
-              <div class="student-table-wrapper">
-                <table class="dashboard-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 28%;">生徒名</th>
-                      <th style="width: 72%;">各生徒の情報（「ミスの原因の割合」と「入力状況」）</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
+              <!-- 生徒一覧テーブル -->
+              <div class="student-list-container">
+                <div class="student-table-wrapper">
+                  <table class="dashboard-table" id="studentTable">
+                    <thead>
+                      <tr>
+                        <th style="width: 10%; text-align: center;">選択</th>
+                        <th style="width: 20%;" class="sortable" data-sort="text" onclick="sortTable(1)">
+                          生徒名<span class="sort-icon">⇅</span>
+                        </th>
+                        <th style="width: 15%;" class="sortable" data-sort="text" onclick="sortTable(2)">
+                          クラス番号<span class="sort-icon">⇅</span>
+                        </th>
+                        <th style="width: 15%;" class="sortable" data-sort="number" onclick="sortTable(3)">
+                          ミスの数<span class="sort-icon">⇅</span>
+                        </th>
+                        <th style="width: 40%;">各生徒の情報</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="student : ${students}">
+                        <td style="text-align: center;">
+                          <!-- 生徒データ保持用ラジオボタン（コメントはタグの外に配置） -->
+                          <input
+                            type="radio"
+                            name="studentId"
+                            th:value="${student.id}"
+                            th:data-name="${student.name}"
+                            th:data-class="${student.classNum}"
+                            th:data-daily-miss="${student.dailyMissCount ?: 0}"
+                            th:data-daily-info="${student.dailyInfo}"
+                            th:data-daily-careless="${student.dailyCarelessCount ?: 0}"
+                            th:data-daily-understanding="${student.dailyLackOfUnderstandingCount ?: 0}"
+                            th:data-daily-time="${student.dailyLackOfTimeCount ?: 0}"
+                            th:data-daily-other="${student.dailyOtherCount ?: 0}"
+                            th:data-summary-miss="${student.summaryMissCount ?: 0}"
+                            th:data-summary-info="${student.summaryInfo}"
+                            th:data-summary-careless="${student.summaryCarelessCount ?: 0}"
+                            th:data-summary-understanding="${student.summaryLackOfUnderstandingCount ?: 0}"
+                            th:data-summary-time="${student.summaryLackOfTimeCount ?: 0}"
+                            th:data-summary-other="${student.summaryOtherCount ?: 0}"
+                            onchange="selectStudent(this)"
+                          />
+                        </td>
+                        <td th:text="${student.name}">山田 太郎</td>
+                        <td th:text="${student.classNum}">101</td>
+                        <td class="miss-cell" th:text="${student.dailyMissCount != null ? student.dailyMissCount + '回' : '0回'}">0回</td>
+                        <td class="info-cell" th:text="${student.dailyInfo}">補足情報</td>
+                      </tr>
+                      <tr th:if="${#lists.isEmpty(students)}">
+                        <td colspan="5" style="text-align: center;">生徒データがありません。</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
 
+            </form>
           </div>
         </div>
       </main>
     </div>
-
-    <script th:inline="javascript">
-      /*
-      const mistakeData = [
-        /*[[${carelessCount}]]*/ 40,
-        /*[[${lackOfUnderstandingCount}]]*/ 30,
-        /*[[${lackOfTimeCount}]]*/ 20,
-        /*[[${otherCount}]]*/ 10
-      /*];*/
-      
-
-      const ctx = document.getElementById('reasonChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['ケアレスミス', '理解不足', '時間不足', 'その他'],
-          datasets: [{
-            data: [40, 30, 20, 10], 
-            backgroundColor: [
-              '#ff6384',
-              '#36a2eb',
-              '#ffce56',
-              '#cc65fe'
-            ],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false 
-            },
-            title: {
-              display: true,
-              text: '間違えた原因'
-            }
-          }
-        }
-      });
-    </script>
   </body>
 </html>

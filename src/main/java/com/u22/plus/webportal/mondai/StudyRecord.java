@@ -1,28 +1,23 @@
 package com.u22.plus.webportal.mondai;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 1回分の学習記録（出席状況・勉強時間・プリント枚数・間違えた問題リスト）。
  */
 public record StudyRecord(
 
-  /** 学習記録ID（DB採番。新規登録時はnullでも可） */
-  Long recordId,
+  Integer sessionId,
 
-  String userId,
+  String studentId,
 
-  AttendanceStatus attendance,
-
-  /** プリント枚数 */
-  Integer printCount,
+  Integer courseId,
 
   /** 勉強時間（分） */
   Integer studyMinutes,
 
-  /** 間違えた問題のリスト（0件可） */
-  List<MistakeEntry> mistakes,
+  /** プリント枚数 */
+  Integer printCount,
 
   LocalDateTime createdAt
 ) {

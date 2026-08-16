@@ -42,7 +42,7 @@ public class StudyRecordService {
         mistakes,
         LocalDateTime.now());
 
-    Long recordId = studyRecordRepository.saveRecord(studyRecord);
+    Long recordId = studyRecordRepository.save(studyRecord);
 
     for (MistakeEntry mistake : mistakes) {
       studyRecordRepository.saveMistake(recordId, mistake);
