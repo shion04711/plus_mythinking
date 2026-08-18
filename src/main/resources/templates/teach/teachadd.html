@@ -26,12 +26,11 @@
 </a>
   </header>
   <main>
+    <h1 class="page-title">講師新規登録</h1>
     <div class="card text-center">
       <div class="card-content">
-        <h1>講師新規登録</h1>
         <div>
           <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">ログインエラーメッセージ</p>
-
           <form method="post" th:action="@{/teachadd}">
             <label for="user_id">ユーザID(メールアドレス)</label>
             <input id="user_id" type="email" name="user_id" placeholder="xxxxxxx@xxx.xxx" />
@@ -41,14 +40,12 @@
             <input id="password2" type="password" name="password2" placeholder="xxxxxxxx" />
             <label for="hyoji">  表示名</label>
             <input id ="hyoji" type="text" name="hyoji" />
-            <button type="submit">登録</button>
+            <br><button type="submit">登録</button>
           </form>
         </div>
       </div>
     </div>
-    <!-- .card -->
   </main>
-  <footer>&copy; plus.com</footer>
 </body>
 
 </html>

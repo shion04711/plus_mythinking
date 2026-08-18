@@ -39,10 +39,10 @@ function sortTable(columnIndex) {
     const cellA = rowA.cells[columnIndex] ? rowA.cells[columnIndex].textContent.trim() : "";
     const cellB = rowB.cells[columnIndex] ? rowB.cells[columnIndex].textContent.trim() : "";
 
-    // 数値（ミスの数）または 割合（正答率など）のソート
-    if (sortType === "number" || sortType === "rate") {
-      const valA = parseNumberValue(cellA);
-      const valB = parseNumberValue(cellB);
+    if (sortType === "number") {
+      // 正答率のソートロジック（未入力を考慮）
+      const valA = parseRateValue(cellA);
+      const valB = parseRateValue(cellB);
       return isAscending ? valA - valB : valB - valA;
     } else {
       // 文字列・クラス番号のソート（自然順比較）

@@ -41,14 +41,17 @@ document.addEventListener("DOMContentLoaded", () => {
             labels: {
               boxWidth: 10,
               boxHeight: 10,
-              padding: 6,
-              font: { size: 11 }
+              padding: 8,
+              font: { size: 15 }
             }
           },
           title: {
             display: true,
             text: '間違えた原因',
-            padding: { top: 0, bottom: 4 }
+            padding: { top: 0, bottom: 4 },
+            font: {
+            size: 25
+            }
           },
           // ★ ツールチップ表示のカスタマイズ（件数 と 百分率 % を両方表示）
           tooltip: {
@@ -118,38 +121,71 @@ function selectStudent(radio) {
 
   const isSummary = currentMode === 'summary';
 
-  // 1. モードに応じた data 属性から値を取得
+  // 生徒情報を取得
   const name = radio.getAttribute('data-name') || '-';
   const classNum = radio.getAttribute('data-class') || '-';
-  const rate = radio.getAttribute(isSummary ? 'data-summary-rate' : 'data-daily-rate') || '-';
-  const info = radio.getAttribute(isSummary ? 'data-summary-info' : 'data-daily-info') || '-';
 
-  // 2. 上部のテキスト表示欄を更新
+  const missCount = radio.getAttribute(
+    isSummary ? 'data-summary-miss' : 'data-daily-miss'
+  ) || '0';
+
+  const info = radio.getAttribute(
+    isSummary ? 'data-summary-info' : 'data-daily-info'
+  ) || '-';
+
+  // 上のグレー部分
   const elName = document.getElementById('displayStudentName');
   const elClass = document.getElementById('displayClassNum');
-  const elRate = document.getElementById('displayAccuracyRate');
+  const elMissCount = document.getElementById('displayMissCount');
   const elInfo = document.getElementById('displayStudentInfo');
 
+  // 表示
   if (elName) elName.textContent = name;
   if (elClass) elClass.textContent = classNum;
-  if (elRate) elRate.textContent = rate;
+  if (elMissCount) elMissCount.textContent = missCount + '回';
   if (elInfo) elInfo.textContent = info;
 
-  // 3. 円グラフの件数データを取得
+  // 円グラフ
   if (reasonChart) {
-    const careless = parseInt(radio.getAttribute(isSummary ? 'data-summary-careless' : 'data-daily-careless')) || 0;
-    const understanding = parseInt(radio.getAttribute(isSummary ? 'data-summary-understanding' : 'data-daily-understanding')) || 0;
-    const time = parseInt(radio.getAttribute(isSummary ? 'data-summary-time' : 'data-daily-time')) || 0;
-    const other = parseInt(radio.getAttribute(isSummary ? 'data-summary-other' : 'data-daily-other')) || 0;
+    const careless = parseInt(
+      radio.getAttribute(
+        isSummary ? 'data-summary-careless' : 'data-daily-careless'
+      )
+    ) || 0;
 
-    let rawCounts = [careless, understanding, time, other];
-    const total = rawCounts.reduce((sum, val) => sum + val, 0);
+    const understanding = parseInt(
+      radio.getAttribute(
+        isSummary ? 'data-summary-understanding' : 'data-daily-understanding'
+      )
+    ) || 0;
 
-    // ★ 件数の合計が 0 の場合（全正解 or データなし）はテスト用データをダミー表示
+    const time = parseInt(
+      radio.getAttribute(
+        isSummary ? 'data-summary-time' : 'data-daily-time'
+      )
+    ) || 0;
+
+    const other = parseInt(
+      radio.getAttribute(
+        isSummary ? 'data-summary-other' : 'data-daily-other'
+      )
+    ) || 0;
+
+    const rawCounts = [
+      careless,
+      understanding,
+      time,
+      other
+    ];
+
+    const total = rawCounts.reduce(
+      (sum, val) => sum + val,
+      0
+    );
+
     if (total === 0) {
       reasonChart.data.datasets[0].data = DEFAULT_TEST_DATA;
     } else {
-      // 件数データをそのまま渡す（Chart.jsが自動で円グラフの割合を決定＆ツールチップで%表示）
       reasonChart.data.datasets[0].data = rawCounts;
     }
 
