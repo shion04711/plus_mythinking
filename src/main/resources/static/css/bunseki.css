@@ -1,3 +1,70 @@
+      .sortable {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+      }
+
+      .sortable:hover {
+        background-color: var(--white-color);
+      }
+
+      .sort-icon {
+        font-size: 0.8em;
+        margin-left: 4px;
+        color: var(--black-color);
+      }
+
+      .student-detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+      }
+      .student-detail-list li {
+        margin-bottom: 4px;
+      }
+
+      /* ▼ 切替スイッチ（デイリー/総括）のデザイン */
+      .mode-switch-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .segmented-control {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--pale-gray-color);
+      border-radius: 8px;
+      padding: 3px;
+      }
+
+      .segmented-control input[type="radio"] {
+        display: none;
+      }
+
+      .segmented-control label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 15px 30px;
+        min-width: 180px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1rem;
+        line-height: 1.2;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        color: var(--black-color);
+      }
+
+    .segmented-control input[type="radio"]:checked + label {
+      background-color: #3182ce;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+      
       .dashboard-grid {
         display: flex;
         gap: 20px;
@@ -18,8 +85,8 @@
       }
       /* 円グラフエリアの調整 */
       .chart-container-box {
-        width: 200px;
-        height: 200px;
+        width: 280px;
+        height: 280px;
         position: relative;
         flex-shrink: 0;
         display: flex;
@@ -53,13 +120,13 @@
       }
       .dashboard-table th {
         background-color: transparent;
-        color: var(--dark-gray-color, #333);
-        border: 1px solid var(--dark-gray-color, #333);
+        color: var(--black-color);
+        border: 1px solid var(--black-color);
         font-size: 1.1rem;
         padding: 10px;
       }
       .dashboard-table td {
-        border: 1px solid var(--dark-gray-color, #333);
+        border: 1px solid var(--black-color);
         height: 48px;
         padding: 5px 10px;
       }

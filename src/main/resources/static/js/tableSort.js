@@ -39,7 +39,7 @@ function sortTable(columnIndex) {
     const cellA = rowA.cells[columnIndex] ? rowA.cells[columnIndex].textContent.trim() : "";
     const cellB = rowB.cells[columnIndex] ? rowB.cells[columnIndex].textContent.trim() : "";
 
-    if (sortType === "rate") {
+    if (sortType === "number") {
       // 正答率のソートロジック（未入力を考慮）
       const valA = parseRateValue(cellA);
       const valB = parseRateValue(cellB);
