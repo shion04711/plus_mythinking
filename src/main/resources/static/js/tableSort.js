@@ -1,5 +1,5 @@
 /**
- * テーブルのソート機能
+ * テーブルのソート機能 (tableSort.js)
  */
 let currentSortColumn = -1;
 let isAscending = true;
@@ -14,7 +14,7 @@ function sortTable(columnIndex) {
   // 「データがありません」の行がある場合はソートしない
   if (rows.length === 1 && rows[0].cells.length === 1) return;
 
-  // クリックした列のタイプ（text または rate）を取得
+  // クリックした列のタイプ（text, number, rate など）を取得
   const th = table.querySelectorAll("thead th")[columnIndex];
   if (!th) return;
   const sortType = th.getAttribute("data-sort");
@@ -39,10 +39,10 @@ function sortTable(columnIndex) {
     const cellA = rowA.cells[columnIndex] ? rowA.cells[columnIndex].textContent.trim() : "";
     const cellB = rowB.cells[columnIndex] ? rowB.cells[columnIndex].textContent.trim() : "";
 
-    if (sortType === "rate") {
-      // 正答率のソートロジック（未入力を考慮）
-      const valA = parseRateValue(cellA);
-      const valB = parseRateValue(cellB);
+    // 数値（ミスの数）または 割合（正答率など）のソート
+    if (sortType === "number" || sortType === "rate") {
+      const valA = parseNumberValue(cellA);
+      const valB = parseNumberValue(cellB);
       return isAscending ? valA - valB : valB - valA;
     } else {
       // 文字列・クラス番号のソート（自然順比較）
@@ -57,13 +57,13 @@ function sortTable(columnIndex) {
 }
 
 /**
- * 正答率文字列（"80%", "75.5", "未入力" など）を数値に変換する関数
+ * 数値文字列（"0回", "10回", "80%", "-" など）を数値に変換する関数
  */
-function parseRateValue(text) {
-  if (!text || text === "未入力") {
-    return -Infinity; // 未入力は最下位として扱う
+function parseNumberValue(text) {
+  if (!text || text === "-" || text === "未入力") {
+    return -1; // データなし/未入力は最小値扱い（降順の際下にいくように設定）
   }
-  // '%' や記号を取り除いて数値に変換
+  // "回" や "%" などの数字以外の文字を取り除いて数値に変換
   const num = parseFloat(text.replace(/[^0-9.]/g, ''));
-  return isNaN(num) ? -Infinity : num;
+  return isNaN(num) ? -1 : num;
 }
