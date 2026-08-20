@@ -15,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
  * 対象はログイン中の本人（studentId）。
  *
  * 間違えた原因の集計は QuestionRepository.countGroupByReason（DB側でGROUP BY）を使用する。
- * error_reason_m に登録されている全 reason_id を基準に、0件の原因も歯抜けなく埋めて返す。
+ * error_reason_m に登録されている全 reason_id (昇順) を基準に、0件の原因も歯抜けなく埋めて
+ * 「件数だけの配列」として返す（HTML/JS側で reason_id 昇順の数値配列として扱いやすくするため）。
  * これにより、error_reason_m の種類数が増減してもそのまま対応できる。
  *
  * 比較コメント・アドバイス文（sikentext相当）は現時点では固定文。
@@ -59,20 +60,20 @@ public class ReportService {
     int allTime = sumStudyMinutes(records);
     int allMaisu = sumPrintCount(records);
 
-    // error_reason_m に登録されている全reason_idを基準に、歯抜けなく件数を埋める
+    // error_reason_m に登録されている全reason_id（昇順）を基準に、歯抜けなく件数を埋める
     List<Integer> allReasonIds = errorReasonRepository.findAllReasonIds();
 
     // 累計（全期間）の原因別集計
     List<ReasonCountData> rawCounts =
         questionRepository.countGroupByReason(studentId, courseId, null, null);
-    List<ReasonCountData> reasonCounts = fillMissingReasons(allReasonIds, rawCounts);
+    List<Long> reasonCounts = fillMissingReasons(allReasonIds, rawCounts);
 
     // 当日分の原因別集計
     LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
     LocalDateTime endOfToday = LocalDate.now().atTime(LocalTime.MAX);
     List<ReasonCountData> rawDailyCounts =
         questionRepository.countGroupByReason(studentId, courseId, startOfToday, endOfToday);
-    List<ReasonCountData> dailyReasonCounts = fillMissingReasons(allReasonIds, rawDailyCounts);
+    List<Long> dailyReasonCounts = fillMissingReasons(allReasonIds, rawDailyCounts);
 
     return new DailyReportView(
         dailyTime,
@@ -99,14 +100,16 @@ public class ReportService {
   }
 
   /**
-   * DBのGROUP BY結果（該当があった原因のみ）を、error_reason_m の全reason_id分に歯抜けなく展開する。
-   * 戻り値は allReasonIds と同じ順番・同じ件数のリストになるため、
-   * 「(戻り値のインデックス) = (allReasonIds内での順番)」という対応が常に成り立つ。
+   * DBのGROUP BY結果（該当があった原因のみ）を、error_reason_m の全reason_id分に
+   * 歯抜けなく展開し、reason_id昇順の「件数だけの配列」として返す。
+   *
+   * 戻り値のインデックス i は、allReasonIds の i番目の reason_id に対応する
+   * （error_reason_m の reason_id が 1 から連番であれば、インデックス = reason_id - 1）。
    * error_reason_m の種類が増減した場合も、allReasonIds を取得し直すだけで自動的に追随する。
    */
-  private List<ReasonCountData> fillMissingReasons(List<Integer> allReasonIds, List<ReasonCountData> rawCounts) {
+  private List<Long> fillMissingReasons(List<Integer> allReasonIds, List<ReasonCountData> rawCounts) {
 
-    List<ReasonCountData> filled = new ArrayList<>();
+    List<Long> filled = new ArrayList<>();
 
     for (Integer reasonId : allReasonIds) {
 
@@ -116,7 +119,7 @@ public class ReportService {
           .map(ReasonCountData::count)
           .orElse(0L);
 
-      filled.add(new ReasonCountData(reasonId, count));
+      filled.add(count);
     }
 
     return filled;

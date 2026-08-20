@@ -20,11 +20,15 @@ public record DailyReportView(
   /** 累計プリント枚数 */
   Integer allMaisu,
 
-  /** 間違えた原因ごとの件数（累計、円グラフ用） */
-  List<ReasonCountData> reasonCounts,
+  /**
+   * 間違えた原因ごとの件数（累計、円グラフ用）。
+   * error_reason_m の reason_id 昇順（1, 2, 3...）に対応した件数だけの配列。
+   * 例: [3, 0, 1, 0, 0, 0, 0, 5] なら reason_id=1が3件, reason_id=8が5件。
+   */
+  List<Long> reasonCounts,
 
-  /** 間違えた原因ごとの件数（当日分） */
-  List<ReasonCountData> dailyReasonCounts,
+  /** 間違えた原因ごとの件数（当日分）。形式は reasonCounts と同じ。 */
+  List<Long> dailyReasonCounts,
 
   /** 今までのデータとの比較コメント（現時点では固定文） */
   String comparisonText,
