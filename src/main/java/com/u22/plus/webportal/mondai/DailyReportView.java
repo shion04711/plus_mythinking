@@ -1,6 +1,6 @@
 package com.u22.plus.webportal.mondai;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * デイリーレポート画面に表示するデータ。
@@ -20,8 +20,11 @@ public record DailyReportView(
   /** 累計プリント枚数 */
   Integer allMaisu,
 
-  /** 間違えた原因ごとの件数（円グラフ用） */
-  Map<ErrorReason, Long> reasonCounts,
+  /** 間違えた原因ごとの件数（累計、円グラフ用） */
+  List<ReasonCountData> reasonCounts,
+
+  /** 間違えた原因ごとの件数（当日分） */
+  List<ReasonCountData> dailyReasonCounts,
 
   /** 今までのデータとの比較コメント（現時点では固定文） */
   String comparisonText,

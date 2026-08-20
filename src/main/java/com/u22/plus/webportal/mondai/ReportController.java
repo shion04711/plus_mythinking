@@ -37,13 +37,14 @@ public class ReportController {
 
     StudentData loginUser = (StudentData) session.getAttribute("studentData");
 
-    DailyReportView report = reportService.getDailyReport(loginUser.studentId());
+    DailyReportView report = reportService.getDailyReport(loginUser.studentId(), loginUser.courseId());
 
     model.addAttribute("dailytime", report.dailyTime());
     model.addAttribute("dailyprint", report.dailyPrint());
     model.addAttribute("alltime", report.allTime());
     model.addAttribute("allmaisu", report.allMaisu());
     model.addAttribute("reasonCounts", report.reasonCounts());
+    model.addAttribute("dailyReasonCounts", report.dailyReasonCounts());
     model.addAttribute("sikentext", report.comparisonText());
     model.addAttribute("nextAdviceText", report.nextAdviceText());
 
