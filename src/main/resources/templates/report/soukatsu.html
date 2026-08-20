@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
   <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css" />
+  <link rel="stylesheet" th:href="@{/css/report.css}" href="../../static/css/report.css" />
+  <!-- Chart.js の読み込み -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -24,26 +27,101 @@
     <div class="card text-center">
       <div class="card-content">
 
-  <div class="report-container">
-    <div class="report-item">
-      <span class="label">総勉強時間</span>
-      <p class="value" th:text="${alltime}">XXX</p>
-    </div>
+        <div class="report-container">
+          <div class="report-item">
+            <span class="label">総勉強時間</span>
+            <p class="value" th:text="${alltime}">XXX</p>
+          </div>
 
-    <div class="report-item">
-      <span class="label">総プリント枚数</span>
-      <p class="value" th:text="${allmaisu}">XXX</p>
-    </div>
+          <div class="report-item">
+            <span class="label">総プリント枚数</span>
+            <p class="value" th:text="${allmaisu}">XXX</p>
+          </div>
 
-    <div class="report-item">
-      <span class="label">試験本番に向けて</span>
-      <p class="value" th:text="${sikentext}">XXXXXX</p>
+          <!-- 総括用の間違えた原因（円グラフ） -->
+          <div class="report-item">
+            <span class="label">間違えた原因（累計）</span>
+            <div class="chart-container">
+              <canvas id="reasonChart"></canvas>
+            </div>
+          </div>
+
+          <div class="report-item">
+            <span class="label">試験本番に向けて</span>
+            <p class="value" th:text="${sikentext}">XXXXXX</p>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-</div>
     <!-- .card -->
   </main>
+
+  <!-- Thymeleafから渡される reasonCounts（総括の8要素リスト）を受け取ってグラフを描画 -->
+  <script th:inline="javascript">
+    // Controllerから渡された 総括用 reasonCounts を取得
+    const rawReasonCounts = /*[[${reasonCounts}]]*/ [0, 0, 0, 0, 0, 0, 0, 0];
+
+    // 8個の要素数になるよう補正（NULL対策・配列長不足対策）
+    const reasonCountsData = Array.isArray(rawReasonCounts) ? rawReasonCounts : [];
+    while (reasonCountsData.length < 8) {
+      reasonCountsData.push(0);
+    }
+
+    const ctx = document.getElementById('reasonChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: [
+          '理解不足',
+          '知識不足',
+          '時間切れ',
+          '思い込み',
+          '読み間違い',
+          '書き間違い',
+          '計算ミス',
+          'ケアレスミス（その他）'
+        ],
+        datasets: [{
+          data: reasonCountsData,
+          backgroundColor: [
+            '#36a2eb', // 1: 理解不足
+            '#4bc0c0', // 2: 知識不足
+            '#ffce56', // 3: 時間切れ
+            '#9966ff', // 4: 思い込み
+            '#ff9f40', // 5: 読み間違い
+            '#e75480', // 6: 書き間違い
+            '#ff6384', // 7: 計算ミス
+            '#c9cbcf'  // 8: ケアレスミス（その他）
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              boxWidth: 12,
+              padding: 15
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                return `${label}: ${value}件 (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>

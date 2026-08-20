@@ -4,8 +4,32 @@
 let reasonChart = null;
 let currentMode = 'daily'; // 現在のモード ('daily' または 'summary')
 
-// テスト用のデフォルトデータ [ケアレスミス, 理解不足, 時間不足, その他]
-const DEFAULT_TEST_DATA = [40, 30, 20, 10];
+// DB(error_reason_m) の8項目に対応するラベル
+const REASON_LABELS = [
+  '理解不足',
+  '知識不足',
+  '時間切れ',
+  '思い込み',
+  '読み間違い',
+  '書き間違い',
+  '計算ミス',
+  'ケアレスミス（その他）'
+];
+
+// 8項目用のカラーパレット
+const REASON_COLORS = [
+  '#36a2eb', // 1: 理解不足
+  '#4bc0c0', // 2: 知識不足
+  '#ffce56', // 3: 時間切れ
+  '#9966ff', // 4: 思い込み
+  '#ff9f40', // 5: 読み間違い
+  '#e75480', // 6: 書き間違い
+  '#ff6384', // 7: 計算ミス
+  '#c9cbcf'  // 8: ケアレスミス（その他）
+];
+
+// テスト用のデフォルトデータ（全8要素）
+const DEFAULT_TEST_DATA = [5, 3, 2, 1, 4, 2, 6, 1];
 
 document.addEventListener("DOMContentLoaded", () => {
   // --- Chart.js の初期化 ---
@@ -15,15 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
     reasonChart = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ['ケアレスミス', '理解不足', '時間不足', 'その他'],
+        labels: REASON_LABELS,
         datasets: [{
           data: DEFAULT_TEST_DATA,
-          backgroundColor: [
-            '#ff6384',
-            '#36a2eb',
-            '#ffce56',
-            '#cc65fe'
-          ],
+          backgroundColor: REASON_COLORS,
           borderWidth: 1,
           radius: '90%'
         }]
@@ -42,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
               boxWidth: 10,
               boxHeight: 10,
               padding: 8,
-              font: { size: 15 }
+              font: { size: 12 }
             }
           },
           title: {
@@ -50,10 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
             text: '間違えた原因',
             padding: { top: 0, bottom: 4 },
             font: {
-            size: 25
+              size: 25
             }
           },
-          // ★ ツールチップ表示のカスタマイズ（件数 と 百分率 % を両方表示）
+          // ツールチップ表示のカスタマイズ（件数 と 百分率 % を両方表示）
           tooltip: {
             callbacks: {
               label: function(context) {
@@ -133,60 +152,50 @@ function selectStudent(radio) {
     isSummary ? 'data-summary-info' : 'data-daily-info'
   ) || '-';
 
-  // 上のグレー部分
+  // 表示の更新
   const elName = document.getElementById('displayStudentName');
   const elClass = document.getElementById('displayClassNum');
   const elMissCount = document.getElementById('displayMissCount');
   const elInfo = document.getElementById('displayStudentInfo');
 
-  // 表示
   if (elName) elName.textContent = name;
   if (elClass) elClass.textContent = classNum;
   if (elMissCount) elMissCount.textContent = missCount + '回';
   if (elInfo) elInfo.textContent = info;
 
-  // 円グラフ
+  // 円グラフの更新
   if (reasonChart) {
-    const careless = parseInt(
-      radio.getAttribute(
-        isSummary ? 'data-summary-careless' : 'data-daily-careless'
-      )
-    ) || 0;
-
-    const understanding = parseInt(
-      radio.getAttribute(
-        isSummary ? 'data-summary-understanding' : 'data-daily-understanding'
-      )
-    ) || 0;
-
-    const time = parseInt(
-      radio.getAttribute(
-        isSummary ? 'data-summary-time' : 'data-daily-time'
-      )
-    ) || 0;
-
-    const other = parseInt(
-      radio.getAttribute(
-        isSummary ? 'data-summary-other' : 'data-daily-other'
-      )
-    ) || 0;
-
-    const rawCounts = [
-      careless,
-      understanding,
-      time,
-      other
-    ];
-
-    const total = rawCounts.reduce(
-      (sum, val) => sum + val,
-      0
+    // HTML属性からリストデータを取得（例: "5,3,2,1,4,2,6,1" や JSON文字列 "[5,3,...]"）
+    const rawDataAttr = radio.getAttribute(
+      isSummary ? 'data-summary-reasons' : 'data-daily-reasons'
     );
 
+    let reasonCounts = [];
+
+    if (rawDataAttr) {
+      try {
+        // JSON形式またはカンマ区切り文字列のパースに対応
+        reasonCounts = typeof rawDataAttr === 'string' && rawDataAttr.startsWith('[')
+          ? JSON.parse(rawDataAttr)
+          : rawDataAttr.split(',').map(v => parseInt(v.trim(), 10) || 0);
+      } catch (e) {
+        console.error("データのパースに失敗しました:", e);
+        reasonCounts = [];
+      }
+    }
+
+    // 8要素になるよう補正（足りない部分は0埋め）
+    while (reasonCounts.length < 8) {
+      reasonCounts.push(0);
+    }
+
+    const total = reasonCounts.reduce((sum, val) => sum + val, 0);
+
+    // 合計が0の場合はデフォルトデータを表示、データがあればそのままセット
     if (total === 0) {
       reasonChart.data.datasets[0].data = DEFAULT_TEST_DATA;
     } else {
-      reasonChart.data.datasets[0].data = rawCounts;
+      reasonChart.data.datasets[0].data = reasonCounts;
     }
 
     reasonChart.update();
