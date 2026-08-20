@@ -32,7 +32,7 @@ public class StudentLoginController {
       return "student/login";
     }
 
-    return "redirect:/";
+    return "student/index";
   }
 
   @GetMapping("/studentlogout")
