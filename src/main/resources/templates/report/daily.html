@@ -64,7 +64,6 @@
 
             <div class="report-item">
               <span class="label">次回気を付けること</span>
-            
               <p class="value" th:text="${nextAdviceText}">XXXXXX</p>
             </div>
 
@@ -75,23 +74,42 @@
     <!-- .card -->
   </main>
 
-  <!-- th:inline="javascript" を追加してモデルデータをJSで扱えるように指定 -->
+  <!-- Thymeleafから渡される reasonCounts（ID 1〜8の件数リスト）を受け取ってグラフを描画 -->
   <script th:inline="javascript">
-    /* Controllerから渡された reasonCounts を取得 (データがない場合の初期値をフォールバック指定) */
-    const reasonCountsData = /*[[${reasonCounts}]]*/ [40, 30, 20, 10];
+    // Controllerから渡された reasonCounts（8要素のリスト）を取得（初期表示・テスト用フォールバック付）
+    const rawReasonCounts = /*[[${reasonCounts}]]*/ [0, 0, 0, 0, 0, 0, 0, 0];
+
+    // 8個の要素数になるよう補正（NULL対策・配列長不足対策）
+    const reasonCountsData = Array.isArray(rawReasonCounts) ? rawReasonCounts : [];
+    while (reasonCountsData.length < 8) {
+      reasonCountsData.push(0);
+    }
 
     const ctx = document.getElementById('reasonChart').getContext('2d');
     new Chart(ctx, {
-      type: 'pie', // 円グラフを指定
+      type: 'pie',
       data: {
-        labels: ['ケアレスミス', '理解不足', '時間不足', 'その他'], 
+        labels: [
+          '理解不足',
+          '知識不足',
+          '時間切れ',
+          '思い込み',
+          '読み間違い',
+          '書き間違い',
+          '計算ミス',
+          'ケアレスミス（その他）'
+        ], 
         datasets: [{
-          data: reasonCountsData, // 受け取った動的データをセット
+          data: reasonCountsData,
           backgroundColor: [
-            '#ff6384',
-            '#36a2eb',
-            '#ffce56',
-            '#cc65fe'
+            '#36a2eb', // 1: 理解不足
+            '#4bc0c0', // 2: 知識不足
+            '#ffce56', // 3: 時間切れ
+            '#9966ff', // 4: 思い込み
+            '#ff9f40', // 5: 読み間違い
+            '#e75480', // 6: 書き間違い
+            '#ff6384', // 7: 計算ミス
+            '#c9cbcf'  // 8: ケアレスミス（その他）
           ],
           borderWidth: 1
         }]
@@ -103,7 +121,19 @@
           legend: {
             position: 'bottom',
             labels: {
-              padding: 25
+              boxWidth: 12,
+              padding: 15
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                return `${label}: ${value}件 (${percentage}%)`;
+              }
             }
           }
         }
