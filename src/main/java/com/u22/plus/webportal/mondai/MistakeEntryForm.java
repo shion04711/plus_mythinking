@@ -1,11 +1,14 @@
 package com.u22.plus.webportal.mondai;
 
 /**
- * 間違えた問題1件分のフォーム入力。
+ * 間違えた問題1件分のフォーム入力（input_logs に対応）。
  * HTML側の name="entries[n].xxx" にバインドされる。
  *
- * questionId・reasonは現状のフォームに入力欄が無いため任意項目。
- * 将来フォームに入力欄が追加された際、そのまま利用できる。
+ * - honbun     : 問題文 (question_text)
+ * - answer     : 正答 (correct_answer)
+ * - miss       : 誤答 (incorrect_answer)
+ * - reason     : ミス原因ID (reason_id、文字列で受け取り数値に変換する。例: "1"～"8")
+ * - questionId : 現状未使用（フォームに入力欄が無いため）
  */
 public class MistakeEntryForm {
 
@@ -17,7 +20,7 @@ public class MistakeEntryForm {
 
   private String honbun;
 
-  /** 間違えた原因（文字列。値は MistakeReason の名前と一致させる。例: "CARELESS"） */
+  /** 間違えた原因ID（error_reason_m.reason_id の文字列表現。例: "1"） */
   private String reason;
 
   public String getQuestionId() {

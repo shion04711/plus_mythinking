@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * コース登録（講師側）の業務ロジックを担当するService。
  *
+ * course_id は course_m テーブルの SERIAL（自動採番）のため、
+ * フォームからの指定は受け取らない。
+ *
  * 主なチェック内容:
- *  - courseId の重複チェック
  *  - 開始日・終了日の形式チェックと前後関係チェック
  */
 @Transactional
@@ -21,38 +23,37 @@ public class CourseService {
   @Autowired
   private CourseRepository courseRepository;
 
-  public Course registCourse(CourseForm form) {
+  /**
+   * コースを登録する。
+   *
+   * @param form      フォーム入力値
+   * @param teacherId ログイン中の講師ID（コースの担当講師として登録される）
+   */
+  public Course registCourse(CourseForm form, String teacherId) {
 
-    validateIds(form);
+    validate(form, teacherId);
 
     LocalDate startDate = parseDate(form.getStart(), "開始日");
     LocalDate endDate = parseDate(form.getEnd(), "終了日");
 
-    Integer courseId = Integer.valueOf(form.getCourseId().trim());
     if (startDate.isAfter(endDate)) {
       throw new CourseRegistException("開始日は終了日より前の日付にしてください。");
     }
-    
+
     Course course = new Course(
-        courseId,
+        null,
         form.getCourseName().trim(),
         startDate,
         endDate,
-      "teacherId");
+        teacherId);
 
     return courseRepository.save(course);
   }
 
-  private void validateIds(CourseForm form) {
+  private void validate(CourseForm form, String teacherId) {
 
-    String courseId = form.getCourseId();
-
-    if (courseId == null || courseId.isBlank()) {
-      throw new CourseRegistException("コースIDが入力されていません。");
-    }
-
-    if (courseRepository.existsById(courseId.trim())) {
-      throw new CourseRegistException("コースID「" + courseId + "」は既に登録されています。別のIDを指定してください。");
+    if (teacherId == null || teacherId.isBlank()) {
+      throw new CourseRegistException("ログイン情報が取得できませんでした。再度ログインしてください。");
     }
 
     if (form.getCourseName() == null || form.getCourseName().isBlank()) {

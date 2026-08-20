@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * デイリーレポート・総括レポートの集計ロジックを担当するService。
- * 対象はログイン中の本人（userId）。
+ * 対象はログイン中の本人（studentId）。
  *
  * 比較コメント・アドバイス文（sikentext相当）は現時点では固定文。
- * 今後、過去データとの比較ロジックに差し替える想定。
+ * 今後、過去データとの比較ロジックや template_m（定型文マスタ）と連携する想定。
  */
 @Transactional
 @Service
@@ -23,17 +23,21 @@ public class ReportService {
   @Autowired
   private StudyRecordRepository studyRecordRepository;
 
+  @Autowired
+  private QuestionRepository questionRepository;
+
   private static final String DEFAULT_COMPARISON_TEXT = "前回までのデータと比較して、勉強の習慣が着実に身についてきています。";
   private static final String DEFAULT_NEXT_ADVICE_TEXT = "間違えた問題を中心に、次回はケアレスミスを減らすことを意識しましょう。";
   private static final String DEFAULT_EXAM_TEXT = "これまでの学習を振り返り、苦手分野を重点的に復習しましょう。";
 
   /**
    * デイリーレポートを作成する。
-   * 「当日分」は createdAt が今日の日付である記録の合計とする。
+   * 「当日分」は created_at が今日の日付である記録の合計とする。
    */
-  public DailyReportView getDailyReport(String userId) {
+  public DailyReportView getDailyReport(String studentId) {
 
-    List<StudyRecord> records = studyRecordRepository.findByStudentId(userId);
+    List<StudyRecord> records = studyRecordRepository.findByStudentId(studentId);
+    List<Question> mistakes = questionRepository.findByStudentId(studentId);
 
     List<StudyRecord> todayRecords = records.stream()
         .filter(this::isToday)
@@ -45,7 +49,7 @@ public class ReportService {
     int allTime = sumStudyMinutes(records);
     int allMaisu = sumPrintCount(records);
 
-    Map<MistakeReason, Long> reasonCounts = countReasons(records);
+    Map<ErrorReason, Long> reasonCounts = countReasons(mistakes);
 
     return new DailyReportView(
         dailyTime,
@@ -60,9 +64,9 @@ public class ReportService {
   /**
    * 総括レポートを作成する。
    */
-  public SummaryReportView getSummaryReport(String userId) {
+  public SummaryReportView getSummaryReport(String studentId) {
 
-    List<StudyRecord> records = studyRecordRepository.findByStudentId(userId);
+    List<StudyRecord> records = studyRecordRepository.findByStudentId(studentId);
 
     int allTime = sumStudyMinutes(records);
     int allMaisu = sumPrintCount(records);
@@ -73,7 +77,7 @@ public class ReportService {
   private int sumStudyMinutes(List<StudyRecord> records) {
     int total = 0;
     for (StudyRecord record : records) {
-      total += record.studyMinutes();
+      total += record.studyMinutes() != null ? record.studyMinutes() : 0;
     }
     return total;
   }
@@ -81,26 +85,27 @@ public class ReportService {
   private int sumPrintCount(List<StudyRecord> records) {
     int total = 0;
     for (StudyRecord record : records) {
-      total += record.printCount();
+      total += record.printCount() != null ? record.printCount() : 0;
     }
     return total;
   }
 
   /**
-   * 全学習記録に含まれる間違えた問題を、原因ごとに集計する。
+   * 間違えた問題(Question)を原因ごとに集計する。
    */
-  private Map<MistakeReason, Long> countReasons(List<StudyRecord> records) {
+  private Map<ErrorReason, Long> countReasons(List<Question> mistakes) {
 
-    Map<MistakeReason, Long> counts = new EnumMap<>(MistakeReason.class);
-    for (MistakeReason reason : MistakeReason.values()) {
+    Map<ErrorReason, Long> counts = new EnumMap<>(ErrorReason.class);
+    for (ErrorReason reason : ErrorReason.values()) {
       counts.put(reason, 0L);
     }
 
-    for (StudyRecord record : records) {
-      for (MistakeEntry mistake : record.mistakes()) {
-        MistakeReason reason = mistake.reason() != null ? mistake.reason() : MistakeReason.OTHER;
-        counts.merge(reason, 1L, Long::sum);
+    for (Question mistake : mistakes) {
+      if (mistake.reasonId() == null) {
+        continue;
       }
+      ErrorReason reason = ErrorReason.fromId(mistake.reasonId());
+      counts.merge(reason, 1L, Long::sum);
     }
 
     return counts;
@@ -110,6 +115,6 @@ public class ReportService {
    * 学習記録が今日作成されたものかどうかを判定する。
    */
   private boolean isToday(StudyRecord record) {
-    return record.createdAt().toLocalDate().isEqual(LocalDate.now());
+    return record.createdAt() != null && record.createdAt().toLocalDate().isEqual(LocalDate.now());
   }
 }

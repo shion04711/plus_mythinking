@@ -14,9 +14,9 @@ import jakarta.servlet.http.HttpSession;
 
 /**
  * コース作成（講師側）の画面遷移を担当するController。
- * 対応するThymeleafテンプレート: courseadd.html
+ * 対応するThymeleafテンプレート: teach/courseadd.html
  *
- * 作成できるのはROLE_ADMIN・ROLE_TOPの権限を持つユーザーのみ。
+ * ログイン中の講師のみ作成可能（TeacherLoginServiceでログイン状態を判定）。
  */
 @Controller
 public class CourseController {
@@ -32,7 +32,7 @@ public class CourseController {
 
   @GetMapping("/courseadd")
   public String getCourseAdd() {
-    return "courseadd";
+    return "teach/courseadd";
   }
 
   @PostMapping("/courseadd")
@@ -42,27 +42,15 @@ public class CourseController {
       return "teach/teachlogin";
     }
 
-    // TeacherData loginUser = (TeacherData) session.getAttribute("userData");
-
-    // if (!isTeacherRole(loginUser.role())) {
-    //   model.addAttribute("errormessage", "この操作を行う権限がありません。");
-    //   return "login";
-    // }
+    TeacherData loginUser = (TeacherData) session.getAttribute("teacherData");
 
     try {
-      courseService.registCourse(form);
+      courseService.registCourse(form, loginUser.teacherId());
     } catch (CourseRegistException e) {
       model.addAttribute("errormessage", e.getMessage());
-      return "courseadd";
+      return "teach/courseadd";
     }
 
     return "teach/teachindex";
   }
-
-  /**
-   * 講師権限（ROLE_ADMIN・ROLE_TOP）かどうかを判定する。
-   */
-//   private boolean isTeacherRole(String role) {
-//     return "ROLE_ADMIN".equals(role) || "ROLE_TOP".equals(role);
-//   }
 }

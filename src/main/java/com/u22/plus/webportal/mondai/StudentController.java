@@ -12,14 +12,12 @@ import com.u22.plus.webportal.user.StudentData;
 import com.u22.plus.webportal.user.StudentRepository;
 import com.u22.plus.webportal.user.TeacherLoginService;
 
-import jakarta.servlet.http.HttpSession;
-
 /**
  * 講師側の生徒一覧・生徒詳細ページ（学習記録一覧）を担当するController。
  * 一覧URL: /student/list
- * 詳細URL: /student/{userId} （例: /student/taro@xxx.co.jp）
+ * 詳細URL: /student/{userId}
  *
- * 閲覧できるのはROLE_ADMIN・ROLE_TOPの権限を持つユーザーのみ。
+ * ログイン中の講師のみ閲覧可能（TeacherLoginServiceでログイン状態を判定）。
  */
 @Controller
 public class StudentController {
@@ -33,22 +31,12 @@ public class StudentController {
   @Autowired
   private TeacherLoginService loginServive;
 
-  @Autowired
-  private HttpSession session;
-
   @GetMapping("/student/list")
   public String getStudentList(Model model) {
 
     if (!loginServive.isLogin()) {
-      return "teacher/login";
+      return "teach/teachlogin";
     }
-
-    // StudentData loginUser = (StudentData) session.getAttribute("userData");
-
-    // if (!isTeacherRole(loginUser.role())) {
-    //   model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");
-    //   return "login";
-    // }
 
     List<StudentData> students = userRepository.findAll();
 
@@ -61,15 +49,8 @@ public class StudentController {
   public String getStudentDetail(Model model, @PathVariable String userId) {
 
     if (!loginServive.isLogin()) {
-      return "login";
+      return "teach/teachlogin";
     }
-
-    // TeacherData loginUser = (TeacherData) session.getAttribute("userData");
-
-    // if (!isTeacherRole(loginUser.role())) {
-    //   model.addAttribute("errormessage", "この画面を閲覧する権限がありません。");
-    //   return "login";
-    // }
 
     List<StudyRecord> studyRecords = studyRecordViewService.getStudyRecords(userId);
 
@@ -78,11 +59,4 @@ public class StudentController {
 
     return "student/detail";
   }
-
-  /**
-   * 講師権限（ROLE_ADMIN・ROLE_TOP）かどうかを判定する。
-   */
-//   private boolean isTeacherRole(String role) {
-//     return "ROLE_ADMIN".equals(role) || "ROLE_TOP".equals(role);
-//   }
 }

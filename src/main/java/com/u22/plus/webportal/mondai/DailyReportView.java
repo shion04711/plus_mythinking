@@ -21,7 +21,7 @@ public record DailyReportView(
   Integer allMaisu,
 
   /** 間違えた原因ごとの件数（円グラフ用） */
-  Map<MistakeReason, Long> reasonCounts,
+  Map<ErrorReason, Long> reasonCounts,
 
   /** 今までのデータとの比較コメント（現時点では固定文） */
   String comparisonText,

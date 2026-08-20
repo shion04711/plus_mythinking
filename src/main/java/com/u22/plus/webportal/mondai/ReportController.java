@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpSession;
 /**
  * 生徒自身が自分の学習記録を振り返るレポート画面のController。
  * 対応するThymeleafテンプレート: report/daily.html, report/soukatsu.html
+ *
+ * URLの "soukatu" はHTML側のリンク(student/index.html)の綴りに合わせている。
  */
 @Controller
 public class ReportController {
@@ -30,10 +32,10 @@ public class ReportController {
   public String getDailyReport(Model model) {
 
     if (!loginServive.isLogin()) {
-      return "login";
+      return "student/login";
     }
 
-    StudentData loginUser = (StudentData) session.getAttribute("userData");
+    StudentData loginUser = (StudentData) session.getAttribute("studentData");
 
     DailyReportView report = reportService.getDailyReport(loginUser.studentId());
 
@@ -48,14 +50,14 @@ public class ReportController {
     return "report/daily";
   }
 
-  @GetMapping("/report/soukatsu")
+  @GetMapping("/report/soukatu")
   public String getSummaryReport(Model model) {
 
     if (!loginServive.isLogin()) {
-      return "login";
+      return "student/login";
     }
 
-    StudentData loginUser = (StudentData) session.getAttribute("userData");
+    StudentData loginUser = (StudentData) session.getAttribute("studentData");
 
     SummaryReportView report = reportService.getSummaryReport(loginUser.studentId());
 

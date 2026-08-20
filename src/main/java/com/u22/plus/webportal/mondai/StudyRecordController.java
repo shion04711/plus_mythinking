@@ -13,7 +13,7 @@ import com.u22.plus.webportal.user.StudentData;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class MondaiController {
+public class StudyRecordController {
 
     @Autowired
     private StudyRecordService studyRecordService;
@@ -36,10 +36,10 @@ public class MondaiController {
             return "student/login";
         }
 
-        StudentData userData = (StudentData) session.getAttribute("userData");
+        StudentData studentData = (StudentData) session.getAttribute("studentData");
 
         try {
-            studyRecordService.registStudyRecord(userData.studentId(), form);
+            studyRecordService.registStudyRecord(studentData.studentId(), studentData.courseId(), form);
         } catch (StudyRecordRegistException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "mondai/input";
