@@ -89,6 +89,32 @@ public class StudentRepository {
     return students;
   }
 
+  /**
+   * 指定したコースIDのいずれかに所属する生徒を全件取得する。
+   * 講師側のダッシュボード画面（担当コースの生徒のみ表示）で使用する。
+   */
+  public List<StudentData> findByCourseIds(List<Integer> courseIds) {
+
+    if (courseIds == null || courseIds.isEmpty()) {
+      return new ArrayList<>();
+    }
+
+    final String SQL_LIST = "SELECT student_id, student_name, course_id, class_name, student_number "
+        + "FROM student_m WHERE course_id IN (:courseIds) ORDER BY student_name";
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("courseIds", courseIds);
+
+    List<Map<String, Object>> resultList = jdbc.queryForList(SQL_LIST, params);
+
+    List<StudentData> students = new ArrayList<>();
+    for (Map<String, Object> row : resultList) {
+      students.add(mapRow(row));
+    }
+
+    return students;
+  }
+
   private StudentData mapRow(Map<String, Object> row) {
 
     Object courseIdObj = row.get("course_id");

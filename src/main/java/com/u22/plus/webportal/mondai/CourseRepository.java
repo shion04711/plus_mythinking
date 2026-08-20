@@ -74,6 +74,22 @@ public class CourseRepository {
 
 
   /**
+   * 指定した講師が担当するコースを全件取得する。
+   * 講師側の生徒一覧・ダッシュボード画面で使用する。
+   */
+  public List<Course> findByTeacherId(String teacherId) {
+
+    final String SQL = "SELECT course_id, course_name, start_date, end_date, teacher_id "
+        + "FROM course_m WHERE teacher_id = :teacherId ORDER BY course_id";
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("teacherId", teacherId);
+
+    return jdbc.query(SQL, params, courseRowMapper);
+  }
+
+
+  /**
    * コースを1件保存する。
    */
   public Course save(Course course) {
