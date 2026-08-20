@@ -22,7 +22,7 @@
     <div class="card text-center">
       <div class="card-content">
         <div>
-          <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">ログインエラーメッセージ</p>
+          <p class="error-message" th:if="${errorMessage}" th:text="${errorMessage}">ログインエラーメッセージ</p>
 
           <form method="post" th:action="@{/studentlogin}">
             <!-- <label for="course">コースID</label>

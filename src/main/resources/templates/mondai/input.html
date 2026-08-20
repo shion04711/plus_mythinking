@@ -72,13 +72,17 @@
             <input id="answer-0" type="text" name="entries[0].answer" placeholder="正しい答え">
 
             <label for="reason-0">間違えた原因</label>
-            <select id="reason-0" name="entries[0].reason">
-              <option value="" disabled selected>選択してください</option>
-              <option value="CARELESS">ケアレスミス</option>
-              <option value="UNDERSTANDING">理解不足</option>
-              <option value="TIME_SHORTAGE">時間不足</option>
-              <option value="OTHER">その他</option>
-            </select>
+              <select id="reason-0" name="entries[0].reason">
+                <option value="" disabled selected>選択してください</option>
+                <option value="1">[DEMO] 理解不足（分かってなかった）</option>
+                <option value="2">[DEMO] 知識不足（知らなかった）</option>
+                <option value="3">[DEMO] 時間切れ</option>
+                <option value="4">[DEMO] 思い込み</option>
+                <option value="5">[DEMO] 読み間違い</option>
+                <option value="6">[DEMO] 書き間違い</option>
+                <option value="7">[DEMO] 計算ミス</option>
+                <option value="8">[DEMO] ケアレスミス（その他）</option>
+              </select>
             <label for="honbun-0">間違えた問題</label>
             <textarea id="honbun-0" name="entries[0].honbun" cols="30" rows="5" placeholder="間違えた問題を入力して下さい"></textarea>
             <button type="button" class="mistake-card__add">＋ 追加</button>
