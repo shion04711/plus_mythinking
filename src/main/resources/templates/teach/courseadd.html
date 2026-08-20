@@ -31,7 +31,7 @@
       <div class="card-content">
         <div>
           <!-- Controllerの model.addAttribute("errormessage", ...) と一致 -->
-          <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">エラーメッセージ</p>
+          <p class="error-message" th:if="${errorMessage}" th:text="${errorMessage}">エラーメッセージ</p>
 
           <!-- POST送信先の設定 -->
           <form method="post" th:action="@{/courseadd}">

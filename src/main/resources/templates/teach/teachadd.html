@@ -30,7 +30,7 @@
     <div class="card text-center">
       <div class="card-content">
         <div>
-          <p class="error-message" th:if="${errormessage}" th:text="${errormessage}">ログインエラーメッセージ</p>
+          <p class="error-message" th:if="${errorMessage}" th:text="${errorMessage}">ログインエラーメッセージ</p>
           <form method="post" th:action="@{/teachadd}">
             <label for="user_id">ユーザID(メールアドレス)</label>
             <input id="user_id" type="email" name="user_id" placeholder="xxxxxxx@xxx.xxx" />
